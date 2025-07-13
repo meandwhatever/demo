@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model mbl_Document {
+  /// Auto-incrementing primary key:
+  id         Int      @id @default(autoincrement())
+  file_Url   String
+  /// The original PDF filename (e.g. "MBL1234.pdf"):
+  file_name  String
+  uploadedAt DateTime @default(now())
+  rawJson    Json
+  /// A JSON  that holds the entire AI‐returned object in one field:
+  file_id    String   @unique
+}
+
+model hbl_Document {
+  /// Auto-incrementing primary key:
+  id         Int      @id @default(autoincrement())
+  file_Url   String
+  /// The original PDF filename (e.g. "MBL1234.pdf"):
+  file_name  String
+  uploadedAt DateTime @default(now())
+  rawJson    Json
+  /// A JSON  that holds the entire AI‐returned object in one field:
+  file_id    String   @unique
+  mbl_Number String   @unique
+}
+
+model Shipment {
+  /// Internal UUID primary key
+  id             String   @id @default(uuid())
+  /// Your “ocn-xxxxxx” business identifier
+  shipmentId     String   @unique
+  /// FCL, LCL, AIR, etc.
+  mode           String?
+  mbl_Number     String?
+  mbl_url        String?
+  hbl_Number     String?  @unique
+  hbl_url        String?  @unique
+  created_at     DateTime @default(now())
+  created_by     String?
+  updated_at     DateTime @updatedAt
+  updated_by     String?
+  updated_reason String?
+  /// All containers on this shipment
+  containers     Json[]
+  /// All freight-charge line items
+  freightCharges Json[]
+  /// holds involved_party,shipment,containers,freight_charges,customs,shipping_documents,validation_result
+  /// dont worry for now
+  rawJson        Json?
+}
+
+model Classification {
+  /// Primary key
+  id                   String   @id @default(uuid())
+
+  /// Record creation time
+  createdAt            DateTime @default(now())
+
+  /// JSON-derived fields
+  hs_code              String?
+  confidence           Float?
+  product_title        String?
+  product_description  String?
+  first_two_digits     String?
+  broader_description  String?
+}

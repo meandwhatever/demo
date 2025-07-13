@@ -1,0 +1,48 @@
+
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import Classifications from "./pages/Classifications";
+import DocumentReview from "./pages/DocumentReview";
+import DocumentList from "./pages/DocumentList";
+import DocumentReviewList from "./pages/DocumentReviewList";
+import Validation from "./pages/Validation";
+import ValidationList from "./pages/ValidationList";
+import ShipmentDetails from "./pages/ShipmentDetails";
+import ShipmentList from "./pages/ShipmentList";
+import ApprovalSubmit from "./pages/ApprovalSubmit";
+import ApprovalSubmitList from "./pages/ApprovalSubmitList";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/classifications" element={<Classifications />} />
+          <Route path="/document-review" element={<DocumentReview />} />
+          <Route path="/document-list" element={<DocumentList />} />
+          <Route path="/document-review-list" element={<DocumentReviewList />} />
+          <Route path="/validation" element={<Validation />} />
+          <Route path="/validation-list" element={<ValidationList />} />
+          <Route path="/shipment-details" element={<ShipmentDetails />} />
+          <Route path="/shipment-list" element={<ShipmentList />} />
+          <Route path="/approval-submit" element={<ApprovalSubmit />} />
+          <Route path="/approval-submit-list" element={<ApprovalSubmitList />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;
