@@ -20,7 +20,11 @@ const Index = () => {
   const [selectedHsCode, setSelectedHsCode] = useState('');
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [showDocumentDetails, setShowDocumentDetails] = useState(false);
+
+  //for document details
   const [selectedDocumentId, setSelectedDocumentId] = useState('');
+  const [selectedDocumentType, setSelectedDocumentType] = useState<'mbl' | 'hbl'>('mbl');
+  
   const [showReviewList, setShowReviewList] = useState(false);
   const [isAIChatVisible, setIsAIChatVisible] = useState(true);
 
@@ -39,8 +43,9 @@ const Index = () => {
     setShowReviewList(false);
   };
 
-  const handleViewDocumentDetails = (documentId: string) => {
+  const handleViewDocumentDetails = (documentId: string, documentType: 'mbl' | 'hbl') => {
     setSelectedDocumentId(documentId);
+    setSelectedDocumentType(documentType);
     setShowDocumentDetails(true);
     setShowClassificationDetails(false);
     setShowClassificationDetailsPage(false);
@@ -80,6 +85,7 @@ const Index = () => {
           <div className="w-full">
             <DocumentDetails 
               documentId={selectedDocumentId}
+              documentType={selectedDocumentType}
               onClose={() => setShowDocumentDetails(false)}
             />
           </div>

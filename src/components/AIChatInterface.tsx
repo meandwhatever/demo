@@ -1,9 +1,10 @@
 'use client'
 //src/components/AIChatInterface.tsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 
 import { Sparkles, Send, Upload, History, ChevronUp, ChevronDown, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
 
 interface AIChatInterfaceProps {
   activeTab: string;
@@ -52,6 +53,63 @@ const AIChatInterface = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
+
+
+
+
+
+    // for file upload
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click(); 
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+
+    for (const file of Array.from(e.target.files)) {
+      const formData = new FormData();
+      formData.append('file', file);       // field name = "file" (server expects this)
+
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message ?? 'Upload failed');
+
+        // Optional confirmation bubble in the chat
+        setChatHistory(h => [
+          ...h,
+          {
+            from: 'ai',
+            message: `✅ Uploaded **${file.name}**.`,
+            time: new Date().toISOString(),
+          },
+        ]);
+      } catch (err) {
+        console.error(err);
+        setChatHistory(h => [
+          ...h,
+          {
+            from: 'ai',
+            message: `⚠️  Upload of *${file.name}* failed.`,
+            time: new Date().toISOString(),
+          },
+        ]);
+      }
+    }
+
+    e.target.value = '';                   // allow re-selecting same file later
+  };
+
+
+
+  
+
+
   const suggestions = [
     'Help me classify freight items',
     'What documents are needed for customs?',
@@ -92,6 +150,7 @@ const AIChatInterface = ({
       console.error('chat error', data.error)
     }
   }
+
 
   return (
     <div className="h-full bg-white flex flex-col">
@@ -217,11 +276,22 @@ const AIChatInterface = ({
                     }
                   }}
                 />
+                {/* hidden file input + visible trigger */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept=".pdf"          /* tweak types as needed */
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
                 <Button
+                  onClick={handleUploadClick}
                   variant="ghost"
                   size="sm"
                   className="absolute right-2 top-2 p-1 h-8 w-8"
-                  title="Upload File/Image"
+                  title="Upload PDF(s)"
                 >
                   <Upload className="w-4 h-4 text-slate-600" />
                 </Button>

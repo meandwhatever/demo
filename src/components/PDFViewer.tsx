@@ -10,9 +10,10 @@ interface PDFViewerProps {
     fromEmail: string;
     emailSubject: string;
   };
+  rawJson?: Record<string, any>;
 }
 
-const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', metadata }: PDFViewerProps) => {
+const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', metadata, rawJson }: PDFViewerProps) => {
   const getDocumentContent = (type: string) => {
     switch (type) {
       case 'MBL':
@@ -20,40 +21,77 @@ const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', me
           <div className="bg-white border rounded-lg shadow-sm min-h-[800px] p-8">
             <div className="text-center mb-8">
               <h2 className="text-xl font-bold text-slate-900">MASTER BILL OF LADING</h2>
-              <p className="text-sm text-slate-600">B/L No: MBL-12345</p>
+              <p className="text-sm text-slate-600">B/L No: {rawJson.shipment.mbl_number}</p>
             </div>
             
             <div className="grid grid-cols-2 gap-8 mb-8">
               <div>
-                <h3 className="font-semibold text-slate-900 mb-2">SHIPPER:</h3>
+                <h3 className="font-semibold text-slate-900 mb-2">SHIPPER:{rawJson.shipper.name}</h3>
                 <p className="text-sm text-slate-700">
-                  ABC Manufacturing Co.<br/>
-                  123 Industrial Drive<br/>
-                  Shanghai, China 200000
+                  {rawJson.shipper.address}<br/>
+                
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 mb-2">CONSIGNEE:</h3>
+                <h3 className="font-semibold text-slate-900 mb-2">CONSIGNEE:{rawJson.consignee.name}</h3>
                 <p className="text-sm text-slate-700">
-                  XYZ Imports LLC<br/>
-                  456 Commerce Street<br/>
-                  Los Angeles, CA 90210
+                  {rawJson.consignee.address}<br/>
                 </p>
               </div>
             </div>
 
             <div className="border border-slate-300 rounded p-4 mb-4">
-              <h3 className="font-semibold text-slate-900 mb-2">VESSEL & VOYAGE:</h3>
-              <p className="text-sm text-slate-700">MSC MAGNIFICENT / V.234E</p>
+              <h3 className="font-semibold text-slate-900 mb-2">VESSEL & VOYAGE:{rawJson.shipment.vessel_name}</h3>
+              <p className="text-sm text-slate-700">{rawJson.shipment.voyage_number}</p>
             </div>
 
             <div className="border border-slate-300 rounded p-4">
-              <h3 className="font-semibold text-slate-900 mb-2">CONTAINER DETAILS:</h3>
-              <p className="text-sm text-slate-700">
-                Container No: MSKU7654321<br/>
-                Seal No: 12345678<br/>
-                Size/Type: 40' HC
-              </p>
+              <h3 className="font-semibold text-slate-900 mb-4">CONTAINER DETAILS:</h3>
+
+              {Array.isArray(rawJson?.containers) && rawJson.containers.length > 0 ? (
+                <div className="space-y-6">
+                  {rawJson.containers.map((c: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="border border-slate-200 rounded-lg p-4 bg-slate-50"
+                    >
+                      <div className="grid grid-cols-[180px_1fr] gap-y-2 gap-x-4 text-sm">
+                        <span className="font-medium text-slate-600">Container #</span>
+                        <span>{c.container_number || '—'}</span>
+
+                        <span className="font-medium text-slate-600">Seal #</span>
+                        <span>{c.seal_number || '—'}</span>
+
+                        <span className="font-medium text-slate-600">Type</span>
+                        <span>{c.container_type || '—'}</span>
+
+                        <span className="font-medium text-slate-600">Packages</span>
+                        <span>
+                          {c.number_of_packages ?? '—'} {c.package_uom}
+                        </span>
+
+                        <span className="font-medium text-slate-600">Weight</span>
+                        <span>
+                          {c.weight ?? '—'} {c.weight_uom}
+                        </span>
+
+                        <span className="font-medium text-slate-600">Volume</span>
+                        <span>
+                          {c.volume ?? '—'} {c.volume_uom}
+                        </span>
+
+                        <span className="font-medium text-slate-600">Description</span>
+                        <span>{c.product_item_description || '—'}</span>
+
+                        <span className="font-medium text-slate-600">HS Code</span>
+                        <span>{c.product_item_hscode || '—'}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-500 italic">No container data found.</p>
+              )}
             </div>
           </div>
         );
@@ -63,35 +101,71 @@ const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', me
           <div className="bg-white border rounded-lg shadow-sm min-h-[800px] p-8">
             <div className="text-center mb-8">
               <h2 className="text-xl font-bold text-slate-900">HOUSE BILL OF LADING</h2>
-              <p className="text-sm text-slate-600">H/B/L No: HBL-54321</p>
+              <p className="text-sm text-slate-600">H/B/L No: {rawJson.shipment.hbl_number}</p>
             </div>
             
             <div className="grid grid-cols-2 gap-8 mb-8">
               <div>
-                <h3 className="font-semibold text-slate-900 mb-2">SHIPPER:</h3>
+                <h3 className="font-semibold text-slate-900 mb-2">SHIPPER:{rawJson.shipper.name}</h3>
                 <p className="text-sm text-slate-700">
-                  DEF Trading Co.<br/>
-                  789 Export Avenue<br/>
-                  Guangzhou, China 510000
+                  {rawJson.shipper.address}<br/>
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 mb-2">CONSIGNEE:</h3>
+                <h3 className="font-semibold text-slate-900 mb-2">CONSIGNEE:{rawJson.consignee.name}</h3>
                 <p className="text-sm text-slate-700">
-                  ABC Logistics Inc.<br/>
-                  321 Import Blvd<br/>
-                  New York, NY 10001
+                  {rawJson.consignee.address}<br/>
                 </p>
               </div>
             </div>
 
             <div className="border border-slate-300 rounded p-4">
-              <h3 className="font-semibold text-slate-900 mb-2">CARGO DESCRIPTION:</h3>
-              <p className="text-sm text-slate-700">
-                Electronic Components and Parts<br/>
-                Weight: 15,000 KGS<br/>
-                Volume: 25 CBM
-              </p>
+              <h3 className="font-semibold text-slate-900 mb-4">CONTAINER DETAILS:</h3>
+
+              {Array.isArray(rawJson?.containers) && rawJson.containers.length > 0 ? (
+                <div className="space-y-6">
+                  {rawJson.containers.map((c: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="border border-slate-200 rounded-lg p-4 bg-slate-50"
+                    >
+                      <div className="grid grid-cols-[180px_1fr] gap-y-2 gap-x-4 text-sm">
+                        <span className="font-medium text-slate-600">Container #</span>
+                        <span>{c.container_number || '—'}</span>
+
+                        <span className="font-medium text-slate-600">Seal #</span>
+                        <span>{c.seal_number || '—'}</span>
+
+                        <span className="font-medium text-slate-600">Type</span>
+                        <span>{c.container_type || '—'}</span>
+
+                        <span className="font-medium text-slate-600">Packages</span>
+                        <span>
+                          {c.number_of_packages ?? '—'} {c.package_uom}
+                        </span>
+
+                        <span className="font-medium text-slate-600">Weight</span>
+                        <span>
+                          {c.weight ?? '—'} {c.weight_uom}
+                        </span>
+
+                        <span className="font-medium text-slate-600">Volume</span>
+                        <span>
+                          {c.volume ?? '—'} {c.volume_uom}
+                        </span>
+
+                        <span className="font-medium text-slate-600">Description</span>
+                        <span>{c.product_item_description || '—'}</span>
+
+                        <span className="font-medium text-slate-600">HS Code</span>
+                        <span>{c.product_item_hscode || '—'}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-500 italic">No container data found.</p>
+              )}
             </div>
           </div>
         );

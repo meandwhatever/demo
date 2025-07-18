@@ -5,29 +5,44 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useNavigate } from 'react-router-dom';
 
+import React, { useEffect, useState } from 'react';
+
 interface RecentDocumentsProps {
-  onViewDocumentDetails?: (documentId: string) => void;
+      onViewDocumentDetails?: (
+        documentId: string,
+        documentType: 'mbl' | 'hbl'
+      ) => void;
 }
 
 const RecentDocuments = ({ onViewDocumentDetails }: RecentDocumentsProps) => {
   const navigate = useNavigate();
 
     // Live data will be injected here via API fetch in a future step
-    const recentDocuments: {
-      date: string;
+     type DocumentRow = {
+      id: number;
+      date: string;            // ISO string for easy formatting on the client
       documentName: string;
-      documentType: string;
-      id: string;
-    }[] = [];
-  
+      documentType: 'mbl' | 'hbl';
+    };
+
+
+  const [recentDocuments, setRecentDocuments] = useState<DocumentRow[]>([]);
+
+  useEffect(() => {
+    fetch('/api/get/get_doc')
+      .then((r) => r.json())
+      .then(setRecentDocuments)
+      .catch(console.error);
+  }, []);
+    
 
   const handleViewAll = () => {
     navigate('/document-list');
   };
 
-  const handleViewDocument = (documentId: string) => {
+  const handleViewDocument = (documentId: string, documentType: 'mbl' | 'hbl') => {
     if (onViewDocumentDetails) {
-      onViewDocumentDetails(documentId);
+      onViewDocumentDetails(documentId,documentType);
     }
   };
 
@@ -78,7 +93,7 @@ const RecentDocuments = ({ onViewDocumentDetails }: RecentDocumentsProps) => {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => handleViewDocument(item.id)}
+                    onClick={() => handleViewDocument(item.id.toString(), item.documentType)}
                     className="flex items-center space-x-1"
                   >
                     <Eye className="w-4 h-4" />

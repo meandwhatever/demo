@@ -1,0 +1,108 @@
+{
+  "shipper": {
+    "name": "ECU WORLDWIDE (GUANGZHOU) LIMITED NINGBO BRANCH",
+    "address": "UNIT 7-3,7-4, YONG SHANG ZJH BUILDING, NO 426 NING DONG ROAD, YINZHOU DISTRICT, NINGBO, CHINA"
+  },
+  "consignee": {
+    "name": "ECU WORLDWIDE (COLOMBIA)",
+    "address": "SAS CODIGO ACI 779, NIT 800.180.908-5, CALLE 26 N # 69 - 76, TORRE 3 (TIERRA) OF. 601"
+  },
+  "notify_party": {
+    "name": "ECU WORLDWIDE (COLOMBIA)",
+    "address": "SAS CODIGO ACI 779, NIT 800.180.908-5, CALLE 26 N # 69 - 76, TORRE 3 (TIERRA) OF. 601"
+  },
+  "shipment": {
+    "mbl_number": "COSU6279806320",
+    "carrier_scac_code": "COSU",
+    "carrier_booking_number": "6279806320",
+    "vessel_name": "EVER LOTUS",
+    "voyage_number": "041E",
+    "port_of_loading": "NINGBO",
+    "port_of_discharge": "BUENAVENTURA,COLOMBIA",
+    "place_of_receipt": "NINGBO",
+    "place_of_delivery": "BUENAVENTURA,COLOMBIA",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": "2020-10-29",
+    "mode": "FCL",
+    "freight_term": "Prepaid",
+    "freight_service": "",
+    "total_number_of_containers": 1,
+    "total_weight": "22722.230 KGS",
+    "total_volume": "58.2610 CBM",
+    "total_package": "950 PACKAGES"
+  },
+  "freight_charges": [
+    {
+      "charge_name": "OCEAN FREIGHT",
+      "rate": 2740.0,
+      "quantity": 1,
+      "unit(Currency)": "USD",
+      "amount": 2740.0,
+      "prepaid or collect": "prepaid"
+    },
+    {
+      "charge_name": "EXPORT EQUIPMENT C",
+      "rate": 30.0,
+      "quantity": null,
+      "unit(Currency)": "CNY",
+      "amount": 30.0,
+      "prepaid or collect": "prepaid"
+    },
+    {
+      "charge_name": "INTERNATIONAL SHIP",
+      "rate": 10.0,
+      "quantity": null,
+      "unit(Currency)": "USD",
+      "amount": 10.0,
+      "prepaid or collect": "collect"
+    },
+    {
+      "charge_name": "SEAL FEE",
+      "rate": 30.0,
+      "quantity": null,
+      "unit(Currency)": "CNY",
+      "amount": 30.0,
+      "prepaid or collect": "prepaid"
+    },
+    {
+      "charge_name": "ORIG TRML HANDLG",
+      "rate": 982.0,
+      "quantity": null,
+      "unit(Currency)": "CNY",
+      "amount": 982.0,
+      "prepaid or collect": "prepaid"
+    },
+    {
+      "charge_name": "DEST TRML HANDLG",
+      "rate": 100.0,
+      "quantity": null,
+      "unit(Currency)": "USD",
+      "amount": 100.0,
+      "prepaid or collect": "collect"
+    },
+    {
+      "charge_name": "ORIGIN DOC FEE",
+      "rate": 450.0,
+      "quantity": null,
+      "unit(Currency)": "CNY",
+      "amount": 450.0,
+      "prepaid or collect": "prepaid"
+    }
+  ],
+  "containers": [
+    {
+      "container_number": "OERU4007810",
+      "seal_number": "16604654",
+      "container_type": "40RQ",
+      "number_of_packages": 950,
+      "package_uom": "PACKAGES",
+      "weight": 22722.23,
+      "weight_uom": "KGS",
+      "volume": 58.261,
+      "volume_uom": "CBM",
+      "product_item_description": "MOTORCYCLE SPARE PARTS; RATCHET STRAP; THE NUMBERS OF PALLETS THAT COME:3 PALLETS; LOAD SLINGS WITH ALL ITS PARTS PARTS FOR ITS NORMAL OPERATION; HS CODE 630790; RELATE NUMBER OF INVOICE AND QUANTITY OF PIECES; 4 COLOUR FLEXOGRAPHIC LABEL PRINTING MACHINE (3C+1C); ULTRASONIC LABEL CUTTING MACHINE; FLANNEL TABLE CLOTH; SMART SCALE; PLASTIC NOSE BRIDGE STRIP; HAND DRYER; HAND DRYER SPARE PARTS; TORNILLO Y BARRIL O CILINDRO; STAINLESS STEEL UNCOATED BAND; AUTOMATIC VEHICLE WASH SYSTEM; POLYESTER NECKTIES; CORBATAS DE POLIESTER; BAGS FOR PACKING",
+      "product_item_hscode": "630790"
+    }
+  ]
+}
