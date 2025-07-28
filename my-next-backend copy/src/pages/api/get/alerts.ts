@@ -1,3 +1,4 @@
+// src/pages/api/alerts.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';          // adjust the path if your prisma helper lives elsewhere
 
@@ -25,6 +26,7 @@ export default async function handler(
         product_title: true,
         confidence: true,
         product_description: true,
+        createdAt: true,
       },
     });
 

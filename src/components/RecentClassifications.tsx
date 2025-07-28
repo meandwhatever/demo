@@ -7,7 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Link } from 'react-router-dom';
 
 interface RecentClassificationsProps {
-  onViewDetails?: (hsCode: string) => void;
+  onViewDetails?: (hsCode: string, id: string, confidence: number, date: string, product: string, description: string) => void;
+  dbBump: number;
+  onDataSaved: () => void;
 }
 
 type Row = {
@@ -19,7 +21,7 @@ type Row = {
   confidence: number;      // 0–100 (already percentage)
 };
 
-const RecentClassifications = ({ onViewDetails }: RecentClassificationsProps) => {
+const RecentClassifications = ({ onViewDetails, dbBump, onDataSaved }: RecentClassificationsProps) => {
   const [recentClassifications, setRecentClassifications] = useState<Row[]>([]);
 
   useEffect(() => {
@@ -49,11 +51,11 @@ const RecentClassifications = ({ onViewDetails }: RecentClassificationsProps) =>
         console.error('recent-classifications-fetch-error', err);
       }
     })();
-  }, []);
+  }, [dbBump]);
 
-  const handleViewDetails = (hsCode: string) => {
+  const handleViewDetails = (hsCode: string, id: string, confidence: number, date: string, product: string, description: string) => {
     if (onViewDetails) {
-      onViewDetails(hsCode);
+      onViewDetails(hsCode, id, confidence, date, product, description);
     }
   };
 
@@ -109,7 +111,14 @@ const RecentClassifications = ({ onViewDetails }: RecentClassificationsProps) =>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => handleViewDetails(item.hsCode)}
+                    onClick={() => handleViewDetails(
+                      item.hsCode,
+                      item.id,
+                      item.confidence,
+                      item.date,
+                      item.product,
+                      item.description,
+                    )}
                     className="flex items-center space-x-1"
                   >
                     <Eye className="w-4 h-4" />

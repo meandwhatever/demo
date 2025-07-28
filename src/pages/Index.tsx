@@ -17,16 +17,31 @@ const Index = () => {
   const [showClassificationDetails, setShowClassificationDetails] = useState(false);
   const [classificationDetailsTitle, setClassificationDetailsTitle] = useState('');
   const [showClassificationDetailsPage, setShowClassificationDetailsPage] = useState(false);
-  const [selectedHsCode, setSelectedHsCode] = useState('');
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [showDocumentDetails, setShowDocumentDetails] = useState(false);
 
   //for document details
   const [selectedDocumentId, setSelectedDocumentId] = useState('');
   const [selectedDocumentType, setSelectedDocumentType] = useState<'mbl' | 'hbl'>('mbl');
+  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState('');
+
+
   
+  //for classification details
+  const [selectedHsCode, setSelectedHsCode] = useState('');
+  const [selectedId, setSelectedId] = useState('');
+  const [selectedConfidence, setSelectedConfidence] = useState(0);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [selectedDescription, setSelectedDescription] = useState('');
+
+
+
   const [showReviewList, setShowReviewList] = useState(false);
   const [isAIChatVisible, setIsAIChatVisible] = useState(true);
+
+  //for realtime data saving and updating
+  const [dbBump, setDbBump] = useState(0);
 
   const handleShowClassificationDetails = (title: string) => {
     setClassificationDetailsTitle(title);
@@ -35,17 +50,23 @@ const Index = () => {
     setShowReviewList(false);
   };
 
-  const handleViewClassificationDetails = (hsCode: string) => {
+  const handleViewClassificationDetails = (hsCode: string, id: string, confidence: number, date: string, product: string, description: string) => {
     setSelectedHsCode(hsCode);
+    setSelectedId(id);
+    setSelectedConfidence(confidence);
+    setSelectedDate(date);
+    setSelectedProduct(product);
+    setSelectedDescription(description);
     setShowClassificationDetailsPage(true);
     setShowClassificationDetails(false);
     setShowDocumentDetails(false);
     setShowReviewList(false);
   };
 
-  const handleViewDocumentDetails = (documentId: string, documentType: 'mbl' | 'hbl') => {
+  const handleViewDocumentDetails = (documentId: string, documentType: 'mbl' | 'hbl', documentUrl: string) => {
     setSelectedDocumentId(documentId);
     setSelectedDocumentType(documentType);
+    setSelectedDocumentUrl(documentUrl);
     setShowDocumentDetails(true);
     setShowClassificationDetails(false);
     setShowClassificationDetailsPage(false);
@@ -60,7 +81,13 @@ const Index = () => {
     setShowFileUpload(false);
   };
 
-  const handleShowReviewList = () => {
+  const handleShowReviewList = (id: string, hsCode: string, confidence: number, createdAt: string, product: string, description: string) => {
+    setSelectedId(id);
+    setSelectedHsCode(hsCode);
+    setSelectedConfidence(confidence);
+    setSelectedDate(createdAt);
+    setSelectedProduct(product);
+    setSelectedDescription(description);
     setShowReviewList(true);
     setShowClassificationDetails(false);
     setShowClassificationDetailsPage(false);
@@ -87,6 +114,7 @@ const Index = () => {
               documentId={selectedDocumentId}
               documentType={selectedDocumentType}
               onClose={() => setShowDocumentDetails(false)}
+              documentUrl={selectedDocumentUrl}
             />
           </div>
         ) : (
@@ -97,8 +125,8 @@ const Index = () => {
                 onShowDetails={handleShowClassificationDetails}
                 onShowReviewList={handleShowReviewList}
               />
-              <RecentClassifications onViewDetails={handleViewClassificationDetails} />
-              <RecentDocuments onViewDocumentDetails={handleViewDocumentDetails} />
+              <RecentClassifications onViewDetails={handleViewClassificationDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />
+              <RecentDocuments onViewDocumentDetails={handleViewDocumentDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />
             </div>
 
             {/* Right Panel - Classification Details & AI Interface */}
@@ -116,6 +144,12 @@ const Index = () => {
                   <ReviewList 
                     onClose={handleCloseReviewList}
                     onViewDetails={handleViewClassificationDetails}
+                    id={selectedId}
+                    confidence={selectedConfidence}
+                    date={selectedDate}
+                    product={selectedProduct}
+                    description={selectedDescription}
+                    hsCode={selectedHsCode}
                   />
                 </div>
               )}
@@ -124,6 +158,11 @@ const Index = () => {
               {showClassificationDetailsPage && !showFileUpload && !showReviewList && (
                 <div className="h-full">
                   <ClassificationDetailsPage 
+                    id={selectedId}
+                    confidence={selectedConfidence}
+                    date={selectedDate}
+                    product={selectedProduct}
+                    description={selectedDescription}
                     hsCode={selectedHsCode}
                     onClose={() => setShowClassificationDetailsPage(false)}
                   />
@@ -163,6 +202,13 @@ const Index = () => {
                     chatMessage={chatMessage}
                     setChatMessage={setChatMessage}
                     onUploadClick={handleShowFileUpload}
+                    onDataSaved={() =>
+                      setDbBump(prev => {
+                        const next = prev + 1;
+                        console.log('🔄 dbBump incremented for AIChatInterface →', next);
+                        return next;
+                      })
+                    }
                   />
                 </div>
               )}

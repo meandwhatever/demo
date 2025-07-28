@@ -24,6 +24,11 @@ interface DocumentDetailsProps {
    * Called when the user presses the Back button; parent should hide this panel.
    */
   onClose: () => void;
+  /**
+   * URL of the document that was clicked in RecentDocuments.
+   */
+  documentUrl: string;
+
 }
 
 /**
@@ -33,12 +38,13 @@ interface DocumentDetailsProps {
  * Styling and layout are copied from the previous `DocumentReview` mock‑up
  * (except for the top navigation bar, which lives in the parent layout).
  */
-const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentType, onClose }) => {
+const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentType, onClose, documentUrl }) => {
   // ────────────────────────────────────────────────────────────────────────────
   // Local state
   // ────────────────────────────────────────────────────────────────────────────
   const [chatMessage, setChatMessage] = useState("");
   const [isAIVisible, setIsAIVisible] = useState(false);
+
 
   // Document payload fetched from the backend (very thin placeholder)
   const [documentData, setDocumentData] = useState<{
@@ -110,7 +116,7 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
   // ────────────────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <h1>Hi before header</h1>
+      {/* <h1>Hi before header</h1> */}
       {/* Simple top bar (replaces the old nav) */}
       <header className="flex items-center justify-between bg-white border-b border-slate-200 px-6 py-3 shadow-sm">
         <Button
@@ -130,18 +136,19 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
         </div>
         {/* You can drop in more actions here if needed */}
       </header>
-      <h1>Hi after header</h1>
+      {/* <h1>Hi after header</h1> */}
       <div className="flex h-[calc(100vh-72px)]">
         {/* Left: PDF preview */}
         <div className="w-1/2 border-r border-slate-200 bg-white">
-          <h1>Hi before pdfviewer</h1>
+          {/* <h1>Hi before pdfviewer</h1> */}
           <PDFViewer
             documentName={documentData.name}
             documentType={documentData.type}
             metadata={metadata}
             rawJson={documentData.rawJson}
+            documentUrl={documentUrl}
           />
-          <h1>Hi after pdfviewer</h1>
+          {/* <h1>Hi after pdfviewer</h1> */}
         </div>
 
         {/* Right: extracted fields + AI assistant */}
@@ -150,9 +157,9 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
           <div
             className={`${isAIVisible ? "flex-[3]" : "flex-1"} border-b border-slate-200 overflow-hidden`}
           >
-            <h1>Hi before documentfields</h1>
+            {/* <h1>Hi before documentfields</h1> */}
             <DocumentFields documentType={documentData.type} rawJson={documentData.rawJson} docId={documentId} />
-            <h1>Hi after documentfields</h1>
+            {/* <h1>Hi after documentfields</h1> */}
           </div>
 
           {/* Toggle */}
@@ -194,6 +201,8 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
                 isVisible={isAIVisible}
                 onToggle={() => setIsAIVisible(!isAIVisible)}
                 showTitleBar={false}
+
+
               />
             </div>
           )}

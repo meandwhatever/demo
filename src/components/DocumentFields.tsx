@@ -216,9 +216,9 @@ const DocumentFields = ({ documentType = 'Commercial Invoice', rawJson, docId }:
       case 'mbl':
         return (
           <>
-            <h1>caseMBL</h1>
-            <h1>docId: {docId}</h1>
-            <h1>blNumber: {rawJson.shipment.mbl_number}</h1>
+                {/* <h1>caseMBL</h1>
+                <h1>docId: {docId}</h1>
+                <h1>blNumber: {rawJson.shipment.mbl_number}</h1> */}
             {/* shipper */}
             <Card>
               <CardHeader className="pb-3">
@@ -749,8 +749,530 @@ const DocumentFields = ({ documentType = 'Commercial Invoice', rawJson, docId }:
         );
       case 'hbl':
         return (
-          <h1>caseHBL to be implemented</h1>
-        )
+          <>
+            {/* <h1>caseHBL</h1>
+            <h1>docId: {docId}</h1>
+            <h1>blNumber: {rawJson.shipment.mbl_number}</h1> */}
+            {/* shipper */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-slate-700">Shipper</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">name</Label>
+                    <Input
+                      
+                      value={jsonData.shipper.name}
+                      onChange={handleChange('shipper', 'name')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">address</Label>
+                    <Input
+                      value={jsonData.shipper.address}
+                      onChange={handleChange('shipper', 'address')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* consignee */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-slate-700">Consignee</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">name</Label>
+                    <Input
+                      
+                      value={jsonData.consignee.name}
+                      onChange={handleChange('consignee', 'name')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">address</Label>
+                    <Input
+                      value={jsonData.consignee.address}
+                      onChange={handleChange('consignee', 'address')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* notify party */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-slate-700">Notify Party</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">name</Label>
+                    <Input
+                      
+                      value={jsonData.notify_party.name}
+                      onChange={handleChange('notify_party', 'name')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">address</Label>
+                    <Input
+                      value={jsonData.notify_party.address}
+                      onChange={handleChange('notify_party', 'address')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* shipment */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-slate-700">Shipment</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">hbl number</Label>
+                    <Input
+                      
+                      value={jsonData.shipment.hbl_number}
+                      onChange={handleChange('shipment', 'hbl_number')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">mbl number</Label>
+                    <Input
+                      value={jsonData.shipment.mbl_number}
+                      onChange={handleChange('shipment', 'mbl_number')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">vessel name</Label>
+                    <Input
+                      value={jsonData.shipment.vessel_name}
+                      onChange={handleChange('shipment', 'vessel_name')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">voyage number</Label>
+                    <Input
+                      value={jsonData.shipment.voyage_number}
+                      onChange={handleChange('shipment', 'voyage_number')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">port of loading</Label>
+                    <Input
+                      value={jsonData.shipment.port_of_loading}
+                      onChange={handleChange('shipment', 'port_of_loading')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">port of discharge</Label>
+                    <Input
+                      value={jsonData.shipment.port_of_discharge}
+                      onChange={handleChange('shipment', 'port_of_discharge')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">place of receipt</Label>
+                    <Input
+                      value={jsonData.shipment.place_of_receipt}
+                      onChange={handleChange('shipment', 'place_of_receipt')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">place of receipt</Label>
+                    <Input
+                      value={jsonData.shipment.place_of_delivery}
+                      onChange={handleChange('shipment', 'place_of_delivery')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">place of issue</Label>
+                    <Input
+                      value={jsonData.shipment.place_of_issue}
+                      onChange={handleChange('shipment', 'place_of_issue')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">date of issue</Label>
+                    <Input
+                      value={jsonData.shipment.date_of_issue}
+                      onChange={handleChange('shipment', 'date_of_issue')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">shipped on board date</Label>
+                    <Input
+                      value={jsonData.shipment.shipped_on_board_date}
+                      onChange={handleChange('shipment', 'shipped_on_board_date')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">mode</Label>
+                    <Input
+                      value={jsonData.shipment.mode}
+                      onChange={handleChange('shipment', 'mode')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">freight term</Label>
+                    <Input
+                      value={jsonData.shipment.freight_term}
+                      onChange={handleChange('shipment', 'freight_term')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">freight term</Label>
+                    <Input
+                      value={jsonData.shipment.freight_service}
+                      onChange={handleChange('shipment', 'freight_service')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">total number of containers</Label>
+                    <Input
+                      value={jsonData.shipment.total_number_of_containers}
+                      onChange={handleChange('shipment', 'total_number_of_containers')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">total weight</Label>
+                    <Input
+                      value={jsonData.shipment.total_weight}
+                      onChange={handleChange('shipment', 'total_weight')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">total volume</Label>
+                    <Input
+                      value={jsonData.shipment.total_volume}
+                      onChange={handleChange('shipment', 'total_volume')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-slate-600">total package</Label>
+                    <Input
+                      value={jsonData.shipment.total_package}
+                      onChange={handleChange('shipment', 'total_package')}
+                      disabled={!isEditing}
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                </div>
+              </CardContent>
+            </Card>
+            {/* inplment the rest of the fields here, use handleArrayChange for onchange  */}
+            {/* freight charges */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-slate-700">
+                  Freight Charges
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {Array.isArray(jsonData.freight_charges) && jsonData.freight_charges.length ? (
+                  jsonData.freight_charges.map((charge, idx) => (
+                    <Card key={idx} className="relative border border-slate-200 p-4">
+                      {/* ⓧ delete row */}
+                      {isEditing && (
+                        <Button
+                          onClick={() => handleDeleteFreightCharge(idx)}
+                          size="icon"
+                          variant="ghost"
+                          className="absolute -right-2 -top-2 rounded-full hover:bg-red-50"
+                        >
+                          <X className="w-4 h-4 text-red-600" />
+                        </Button>
+                      )}
+
+                      <div className="grid grid-cols-6 gap-3">
+                      <div>
+                        <Label className="text-xs font-medium text-slate-600">Charge Name</Label>
+                        <Input
+                          value={charge.charge_name}
+                          onChange={handleArrayChange('freight_charges', idx, 'charge_name')}
+                          disabled={!isEditing}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-slate-600">Rate</Label>
+                        <Input
+                          type="number"
+                          value={charge.rate ?? ''}
+                          onChange={handleArrayChange('freight_charges', idx, 'rate')}
+                          disabled={!isEditing}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-slate-600">Quantity</Label>
+                        <Input
+                          type="number"
+                          value={charge.quantity ?? ''}
+                          onChange={handleArrayChange('freight_charges', idx, 'quantity')}
+                          disabled={!isEditing}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-slate-600">Unit (Currency)</Label>
+                        <Input
+                          value={charge['unit(Currency)']}
+                          onChange={handleArrayChange('freight_charges', idx, 'unit(Currency)')}
+                          disabled={!isEditing}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-slate-600">Amount</Label>
+                        <Input
+                          type="number"
+                          value={charge.amount ?? ''}
+                          onChange={handleArrayChange('freight_charges', idx, 'amount')}
+                          disabled={!isEditing}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-slate-600">Prepaid / Collect</Label>
+                        <Input
+                          value={charge['prepaid or collect']}
+                          onChange={handleArrayChange('freight_charges', idx, 'prepaid or collect')}
+                          disabled={!isEditing}
+                          className="mt-1"
+                        />
+                      </div>
+                      </div>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-500">No freight charges found.</p>
+                )}
+              </CardContent>
+
+              {/* ➕ add new row */}
+              {isEditing && (
+                <div className="p-4 pt-0">
+                  <Button
+                    onClick={handleAddFreightCharge}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Add freight charge
+                  </Button>
+                </div>
+              )}
+            </Card>
+
+
+            {/* containers */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-slate-700">
+                  Containers
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {Array.isArray(jsonData.containers) && jsonData.containers.length ? (
+                  jsonData.containers.map((cntr, idx) => (
+                    <Card key={idx} className="relative border border-slate-200 p-4">
+                      {/* ⓧ delete row */}
+                      {isEditing && (
+                        <Button
+                          onClick={() => handleDeleteContainer(idx)}
+                          size="icon"
+                          variant="ghost"
+                          className="absolute -right-2 -top-2 rounded-full hover:bg-red-50"
+                        >
+                          <X className="w-4 h-4 text-red-600" />
+                        </Button>
+                      )}
+
+                      <div className="grid grid-cols-4 gap-3">
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Container No.</Label>
+                          <Input
+                            value={cntr.container_number}
+                            onChange={handleArrayChange('containers', idx, 'container_number')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Seal No.</Label>
+                          <Input
+                            value={cntr.seal_number}
+                            onChange={handleArrayChange('containers', idx, 'seal_number')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Type</Label>
+                          <Input
+                            value={cntr.container_type}
+                            onChange={handleArrayChange('containers', idx, 'container_type')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600"># Packages</Label>
+                          <Input
+                            type="number"
+                            value={cntr.number_of_packages ?? ''}
+                            onChange={handleArrayChange('containers', idx, 'number_of_packages')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Pkg UOM</Label>
+                          <Input
+                            value={cntr.package_uom}
+                            onChange={handleArrayChange('containers', idx, 'package_uom')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Weight</Label>
+                          <Input
+                            type="number"
+                            value={cntr.weight ?? ''}
+                            onChange={handleArrayChange('containers', idx, 'weight')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Weight UOM</Label>
+                          <Input
+                            value={cntr.weight_uom}
+                            onChange={handleArrayChange('containers', idx, 'weight_uom')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Volume</Label>
+                          <Input
+                            type="number"
+                            value={cntr.volume ?? ''}
+                            onChange={handleArrayChange('containers', idx, 'volume')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">Volume UOM</Label>
+                          <Input
+                            value={cntr.volume_uom}
+                            onChange={handleArrayChange('containers', idx, 'volume_uom')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Label className="text-xs font-medium text-slate-600">Item Description</Label>
+                          <Input
+                            value={cntr.product_item_description}
+                            onChange={handleArrayChange('containers', idx, 'product_item_description')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600">HS Code</Label>
+                          <Input
+                            value={cntr.product_item_hscode}
+                            onChange={handleArrayChange('containers', idx, 'product_item_hscode')}
+                            disabled={!isEditing}
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-500">No containers found.</p>
+                )}
+              </CardContent>
+
+              {/* ➕ add new row */}
+              {isEditing && (
+                <div className="p-4 pt-0">
+                  <Button
+                    onClick={handleAddContainer}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Add container
+                  </Button>
+                </div>
+              )}
+            </Card>
+
+          </>
+        );
 
 
       default: // add later

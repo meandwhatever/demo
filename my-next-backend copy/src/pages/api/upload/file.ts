@@ -46,7 +46,7 @@ type ResponseData = {
   hbl_Number?: string;
   //get
   data?: any;
-
+  saved?: boolean;
 };
 
 export default async function handler(
@@ -274,6 +274,7 @@ export default async function handler(
       fileId: doc.file_id, 
       id: doc.id, 
       action: action, 
+      saved: true,
       //mbl_Number: doc.mbl_Number, 
       //hbl_Number: doc.hbl_Number
     });

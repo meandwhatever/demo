@@ -1,0 +1,90 @@
+{
+  "shipper": {
+    "name": "HONOUR LANE SHIPPING LIMITED",
+    "address": "UNIT J, 33/F, PLAZA 88, 88 YEUNG UK ROAD, TSUEN WAN, N.T., HONG KONG"
+  },
+  "consignee": {
+    "name": "PRIMARY FREIGHT SERVICES INC",
+    "address": "1 CENTERPOINTE DR. SUITE 330, LA PALMA, CA, 90623 EIN+954706894"
+  },
+  "notify_party": {
+    "name": "PRIMARY FREIGHT SERVICES INC",
+    "address": "1 CENTERPOINTE DR. SUITE 330, LA PALMA, CA, 90623 EIN+954706894"
+  },
+  "shipment": {
+    "mbl_number": "HLCUHA3241020976",
+    "carrier_scac_code": "HNLT",
+    "carrier_booking_number": "21172344",
+    "vessel_name": "YM WELCOME",
+    "voyage_number": "043E",
+    "port_of_loading": "VUNG TAU",
+    "port_of_discharge": "OAKLAND, CA",
+    "place_of_receipt": "HO CHI MINH CITY, VIET NAM",
+    "place_of_delivery": "DENVER, CO",
+    "place_of_release": "",
+    "date_of_release": "2024-11-15",
+    "shipped_on_board_date": "2024-11-15",
+    "mode": "FCL",
+    "freight_term": "Collect",
+    "freight_service": "",
+    "total_number_of_containers": 4,
+    "total_weight": "40742 kg",
+    "total_volume": "271.380 m3",
+    "total_package": "650 cartons"
+  },
+  "freight_charges": [],
+  "containers": [
+    {
+      "container_number": "UACU5488301",
+      "seal_number": "HLC2816622",
+      "container_type": "40'HC",
+      "number_of_packages": 200,
+      "package_uom": "CARTONS",
+      "weight": 9371,
+      "weight_uom": "KGS",
+      "volume": 67.17,
+      "volume_uom": "CBM",
+      "product_item_description": "TV CONSOLE; KING BED BASE; QUEEN BED BASE",
+      "product_item_hscode": "940391, 940350"
+    },
+    {
+      "container_number": "TCLU8781171",
+      "seal_number": "HLC2816697",
+      "container_type": "40'HC",
+      "number_of_packages": 200,
+      "package_uom": "CARTONS",
+      "weight": 9371,
+      "weight_uom": "KGS",
+      "volume": 67.17,
+      "volume_uom": "CBM",
+      "product_item_description": "TV CONSOLE; KING BED BASE; QUEEN BED BASE",
+      "product_item_hscode": "940391, 940350"
+    },
+    {
+      "container_number": "HLBU1613172",
+      "seal_number": "HLC2816696",
+      "container_type": "40'HC",
+      "number_of_packages": 125,
+      "package_uom": "CARTONS",
+      "weight": 11000,
+      "weight_uom": "KGS",
+      "volume": 68.52,
+      "volume_uom": "CBM",
+      "product_item_description": "TV CONSOLE; KING BED BASE; QUEEN BED BASE",
+      "product_item_hscode": "940391, 940350"
+    },
+    {
+      "container_number": "HLXU8289777",
+      "seal_number": "HLC2819922",
+      "container_type": "40'HC",
+      "number_of_packages": 125,
+      "package_uom": "CARTONS",
+      "weight": 11000,
+      "weight_uom": "KGS",
+      "volume": 68.52,
+      "volume_uom": "CBM",
+      "product_item_description": "TV CONSOLE; KING BED BASE; QUEEN BED BASE",
+      "product_item_hscode": "940391, 940350"
+    }
+  ]
+}

@@ -71,4 +71,6 @@ model Classification {
   product_description  String?
   first_two_digits     String?
   broader_description  String?
+
+  need_Review Boolean  @default(true)
 }

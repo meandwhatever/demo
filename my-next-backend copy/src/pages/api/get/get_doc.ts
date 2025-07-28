@@ -7,6 +7,7 @@ export type DocumentRow = {
   date: string;            // ISO string for easy formatting on the client
   documentName: string;
   documentType: 'mbl' | 'hbl';
+  documentUrl: string;
 };
 
 export default async function handler(
@@ -17,12 +18,12 @@ export default async function handler(
     // 🔎  Grab the newest N from *each* table in parallel
     const [mblRows, hblRows] = await Promise.all([
       prisma.mbl_Document.findMany({
-        select: { id: true, uploadedAt: true, file_id: true }, // ↞ use your exact column names
+        select: { id: true, uploadedAt: true, file_id: true, file_Url: true }, // ↞ use your exact column names
         orderBy: { uploadedAt: 'desc' },
         take: 5,
       }),
       prisma.hbl_Document.findMany({
-        select: { id: true, uploadedAt: true, file_id: true },
+        select: { id: true, uploadedAt: true, file_id: true, file_Url: true },
         orderBy: { uploadedAt: 'desc' },
         take: 5,
       }),
@@ -35,12 +36,14 @@ export default async function handler(
         date: d.uploadedAt.toISOString(),
         documentName: d.file_id,
         documentType: 'mbl' as const,
+        documentUrl: d.file_Url,
       })),
       ...hblRows.map((d) => ({
         id: d.id,
         date: d.uploadedAt.toISOString(),
         documentName: d.file_id,
         documentType: 'hbl' as const,
+        documentUrl: d.file_Url,
       })),
     ]
       .sort((a, b) => (a.date < b.date ? 1 : -1)) // newest first

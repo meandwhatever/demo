@@ -7,16 +7,23 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 interface ReviewListProps {
   onClose: () => void;
-  onViewDetails?: (hsCode: string) => void;
+  onViewDetails?: (hsCode: string, id: string, confidence: number, date: string, product: string, description: string) => void;
+  id: string;
+  confidence: number;
+  date: string;
+  product: string;
+  description: string;
+  hsCode: string;
+
 }
 
-const ReviewList = ({ onClose, onViewDetails }: ReviewListProps) => {
+const ReviewList = ({ onClose, onViewDetails, id, confidence, date, product, description, hsCode }: ReviewListProps) => {
   const reviewItems = [
     { 
-      date: '2024-07-03', 
-      product: 'Digital camera', 
-      hsCode: '8525', 
-      description: 'Transmission apparatus for radio-broadcasting or television',
+      date: date, 
+      product: product, 
+      hsCode: hsCode, 
+      description: description,
       confidence: 95,
       reason: 'Below confidence threshold (100%)'
     }
@@ -24,7 +31,7 @@ const ReviewList = ({ onClose, onViewDetails }: ReviewListProps) => {
 
   const handleViewDetails = (hsCode: string) => {
     if (onViewDetails) {
-      onViewDetails(hsCode);
+      onViewDetails(hsCode, id, confidence, date, product, description);
     }
   };
 

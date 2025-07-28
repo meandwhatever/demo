@@ -25,6 +25,7 @@ interface ChatResponse {
   reply?: string
   classificationId?: string
   error?: unknown
+  saved?: boolean
 }
 
 /* ───────────── API handler ───────────── */
@@ -52,6 +53,7 @@ export default async function handler(
     last.message.trim().toLowerCase().startsWith('classify')
 
   console.log("isClassification", isClassification)
+  console.log("last message", last.message.trim().toLowerCase())
 
   /* 4 – Pick the Python script */
   const scriptPath = path.resolve(
@@ -122,7 +124,9 @@ export default async function handler(
       // keep serving the AI reply even if DB insert fails
     }
   }
+  let saved = true;
 
   /* 8 – Done */
-  return res.status(200).json({ success: true, reply, classificationId })
+  console.log("reply is", reply)
+  return res.status(200).json({ success: true, reply, classificationId, saved})
 }

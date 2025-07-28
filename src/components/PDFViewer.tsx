@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 interface PDFViewerProps {
   documentName?: string;
   documentType?: string;
+  documentUrl?: string;
   metadata?: {
     date: string;
     fromEmail: string;
@@ -13,7 +14,8 @@ interface PDFViewerProps {
   rawJson?: Record<string, any>;
 }
 
-const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', metadata, rawJson }: PDFViewerProps) => {
+const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', metadata, rawJson, documentUrl }: PDFViewerProps) => {
+/*
   const getDocumentContent = (type: string) => {
     switch (type) {
       case 'MBL':
@@ -271,7 +273,10 @@ const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', me
         );
     }
   };
+*/
 
+  console.log('documentUrl', documentUrl);
+  const url = "/my-next-backend copy/public" + documentUrl;
   return (
     <div className="h-full flex flex-col">
       {/* PDF Controls */}
@@ -319,11 +324,19 @@ const PDFViewer = ({ documentName = 'Document.pdf', documentType = 'Unknown', me
 
       {/* PDF Viewer Area */}
       <div className="flex-1 p-4 overflow-auto bg-slate-50">
-        <Card className="mx-auto max-w-full">
-          <CardContent className="p-0">
-            {getDocumentContent(documentType)}
-          </CardContent>
-        </Card>
+
+          {documentUrl ? (
+            <iframe
+              src={url}
+              title={documentName}
+              className="w-full h-full border-0"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full text-slate-500">
+              No preview available
+            </div>
+          )}
+
       </div>
     </div>
   );

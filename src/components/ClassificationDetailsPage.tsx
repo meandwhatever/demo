@@ -1,4 +1,4 @@
-
+//shown when user clicks on a classification in the recent classifications list
 import { useState } from 'react';
 import { X, Download, FileText, ChevronUp, ChevronDown, Sparkles, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,36 +9,38 @@ import AIChatInterface from './AIChatInterface';
 
 interface ClassificationDetailsPageProps {
   hsCode: string;
+  id: string;
+  confidence: number;
+  date: string;
+  product: string;
+  description: string;
   onClose: () => void;
 }
 
-const ClassificationDetailsPage = ({ hsCode, onClose }: ClassificationDetailsPageProps) => {
+const ClassificationDetailsPage = ({ hsCode, id, confidence, date, product, description, onClose }: ClassificationDetailsPageProps) => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
 
   // Mock data - in a real app, this would come from props or API
   const classificationData = {
     '8703': {
-      date: '2024-07-04',
-      productTitle: 'Motor vehicle for passenger transport',
-      productDescription: 'A four-wheeled motor vehicle designed primarily for the transportation of passengers, featuring seating capacity for up to 5 people, powered by an internal combustion engine, with standard safety features including airbags, ABS braking system, and electronic stability control.',
-      hsCode: '8703',
+      date: date,
+      productTitle: product,
+      productDescription: description,
+      hsCode: hsCode,
       dutyRate: '2.5%',
+      confidence: confidence,
       justification: {
-        productSummary: 'The product is a passenger motor vehicle designed for personal transportation with standard automotive safety and comfort features.',
+        productSummary: 'to be added',
         stepByStepAnalysis: [
-          'Step 1: Identify the primary function - The vehicle is designed for passenger transport, not goods transport or special purposes.',
-          'Step 2: Determine vehicle type - This is a motor car with seating for up to 5 people, falling under standard passenger vehicles.',
-          'Step 3: Check engine specifications - Internal combustion engine confirms it falls under motor vehicles category.',
-          'Step 4: Verify exclusions - Not a commercial vehicle, bus, or special purpose vehicle.',
-          'Step 5: Apply classification - Based on characteristics, this falls under HS Code 8703 for passenger motor vehicles.'
+          'to be added',
         ],
-        reference: 'HS Code 8703 covers "Motor cars and other motor vehicles principally designed for the transport of persons (other than those of heading 87.02), including station wagons and racing cars." This classification is based on the World Customs Organization Harmonized System nomenclature.'
+        reference: 'to be added'
       }
     }
   };
 
-  const data = classificationData[hsCode as keyof typeof classificationData];
+  const data = classificationData[8703];
 
   if (!data) {
     return (
@@ -79,10 +81,8 @@ const ClassificationDetailsPage = ({ hsCode, onClose }: ClassificationDetailsPag
       </div>
 
       {/* Content Container */}
-      <div className="flex-1 flex flex-col relative">
-        {/* Main Content - Takes full space when AI chat is hidden, or top 3/5 when shown */}
-        <div className={showAIChat ? "h-3/5 overflow-hidden" : "flex-1 overflow-hidden"}>
-          <div className="h-full p-6 overflow-y-auto">
+      {/* Scrollable content (everything below the header) */}
+        <div className={`flex-1 overflow-y-auto p-6 ${showAIChat ? 'mb-[40%]' : ''}`}>
             <div className="space-y-6">
               {/* Basic Information */}
               <Card>
@@ -105,7 +105,7 @@ const ClassificationDetailsPage = ({ hsCode, onClose }: ClassificationDetailsPag
                           {data.hsCode}
                         </code>
                         <Badge variant="outline" className="text-xs">
-                          100% Confidence
+                          {confidence}% Confidence
                         </Badge>
                       </div>
                     </div>
@@ -161,8 +161,8 @@ const ClassificationDetailsPage = ({ hsCode, onClose }: ClassificationDetailsPag
                 </CardContent>
               </Card>
             </div>
-          </div>
         </div>
+
 
         {/* AI Chat Interface - Positioned at bottom 2/5 when shown */}
         {showAIChat && (
@@ -211,7 +211,7 @@ const ClassificationDetailsPage = ({ hsCode, onClose }: ClassificationDetailsPag
 
         {/* AI Copilot Toggle Button - Fixed at bottom when hidden */}
         {!showAIChat && (
-          <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center p-4 border-t border-slate-200 bg-gradient-to-r from-purple-50 to-indigo-50">
+          <div className=" bottom-0 left-0 right-0 flex justify-between items-center p-4 border-t border-slate-200 bg-gradient-to-r from-purple-50 to-indigo-50">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-4 h-4 text-white" />
@@ -236,7 +236,7 @@ const ClassificationDetailsPage = ({ hsCode, onClose }: ClassificationDetailsPag
             </Button>
           </div>
         )}
-      </div>
+
     </div>
   );
 };

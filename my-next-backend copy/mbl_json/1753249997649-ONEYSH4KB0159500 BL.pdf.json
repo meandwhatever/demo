@@ -1,0 +1,77 @@
+{
+  "shipper": {
+    "name": "UBI LOGISTICS (CHINA) LIMITED SHANGHAI BRANCH",
+    "address": "A302-304, JIN YING PLAZA, NO.1518 MIN SHENG ROAD, PUDONG, SHANGHAI, CHINA"
+  },
+  "consignee": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD, FORT SMITH, AR 72903"
+  },
+  "notify_party": {
+    "name": "SAME AS CONSIGNEE",
+    "address": "3801 OLD GREENWOOD ROAD, FORT SMITH, AR 72903"
+  },
+  "shipment": {
+    "mbl_number": "ONEYSH4KB0159500",
+    "carrier_scac_code": "ONE",
+    "carrier_booking_number": "SH4KB0159500",
+    "vessel_name": "HMM TOPAZ",
+    "voyage_number": "002E",
+    "port_of_loading": "SHANGHAI",
+    "port_of_discharge": "LOS ANGELES, CA",
+    "place_of_receipt": "SHANGHAI",
+    "place_of_delivery": "LOS ANGELES, CA",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": "2024-10-22",
+    "mode": "FCL",
+    "freight_term": "Collect",
+    "freight_service": "",
+    "total_number_of_containers": 3,
+    "total_weight": "51408 kg",
+    "total_volume": "102 m3",
+    "total_package": "102 BAGS"
+  },
+  "freight_charges": [],
+  "containers": [
+    {
+      "container_number": "DRYU4083937",
+      "seal_number": "CN73056AL",
+      "container_type": "40GP",
+      "number_of_packages": 34,
+      "package_uom": "BAGS",
+      "weight": 17136,
+      "weight_uom": "KGS",
+      "volume": 34,
+      "volume_uom": "M3",
+      "product_item_description": "GLUFOSINATE-AMMONIUM TECHNICAL",
+      "product_item_hscode": "2931499030"
+    },
+    {
+      "container_number": "MOFU0627388",
+      "seal_number": "CN47689AL",
+      "container_type": "40GP",
+      "number_of_packages": 34,
+      "package_uom": "BAGS",
+      "weight": 17136,
+      "weight_uom": "KGS",
+      "volume": 34,
+      "volume_uom": "M3",
+      "product_item_description": "GLUFOSINATE-AMMONIUM TECHNICAL",
+      "product_item_hscode": "2931499030"
+    },
+    {
+      "container_number": "MOFU6740004",
+      "seal_number": "CN67933AL",
+      "container_type": "40GP",
+      "number_of_packages": 34,
+      "package_uom": "BAGS",
+      "weight": 17136,
+      "weight_uom": "KGS",
+      "volume": 34,
+      "volume_uom": "M3",
+      "product_item_description": "GLUFOSINATE-AMMONIUM TECHNICAL",
+      "product_item_hscode": "2931499030"
+    }
+  ]
+}

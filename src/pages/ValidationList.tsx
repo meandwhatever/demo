@@ -67,7 +67,7 @@ const ValidationList = () => {
             onShowDetails={handleShowClassificationDetails} 
             onShowReviewList={handleShowReviewList}
           />
-          <RecentDocuments />
+          <RecentDocuments dbBump={0} onDataSaved={() => {}} />
           <Shipments />
         </div>
 

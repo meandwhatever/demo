@@ -2,8 +2,19 @@
 //src/components/AIChatInterface.tsx
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 
-import { Sparkles, Send, Upload, History, ChevronUp, ChevronDown, MessageCircle } from 'lucide-react';
+import { Sparkles, Send, Upload, History, ChevronUp, ChevronDown, MessageCircle, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+/** Format an ISO string into “Jul 21, 12:34 PM CDT” in the user’s time zone */
+const formatTimestamp = (iso: string) =>
+  new Date(iso).toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short',
+  });
 
 
 interface AIChatInterfaceProps {
@@ -16,6 +27,9 @@ interface AIChatInterfaceProps {
   onToggle?: () => void;
   showTitleBar?: boolean;
   onUploadClick?: () => void;
+  //for realtime data saving and updating
+  onDataSaved?: () => void;
+
   
 }
 
@@ -23,6 +37,8 @@ type ChatItem = {
   message: string;
   time: string;
   from: 'user' | 'ai';
+  /** true only for the temporary “Processing…” bubble */
+  isPlaceholder?: boolean;
 };
 
 const AIChatInterface = ({
@@ -36,6 +52,7 @@ const AIChatInterface = ({
   onToggle ,
   showTitleBar = true,
   onUploadClick,
+  onDataSaved,
 }: AIChatInterfaceProps) => {
   // Toggle chat‑history side panel
   const [showChatHistory, setShowChatHistory] = useState(false);
@@ -53,6 +70,28 @@ const AIChatInterface = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
+//helpers for showing a processing message
+const [isProcessing, setIsProcessing] = useState(false);
+
+  const pushPlaceholder = (text: string): number => {
+    // snapshot current length *before* we schedule the state update
+    const idx = chatHistory.length
+    const placeholder: ChatItem = {
+      from: 'ai',
+      message: text,
+      time: new Date().toISOString(),
+      isPlaceholder: true,
+    }
+    setChatHistory(prev => [...prev, placeholder])
+    return idx
+  }
+  
+    const replacePlaceholder = (idx: number, text: string) => {
+      setChatHistory(prev =>
+        prev.map((item, i) => (i === idx ? { ...item, message: text, isPlaceholder: false } : item)),
+      );
+    };
+
 
 
 
@@ -61,47 +100,39 @@ const AIChatInterface = ({
     // for file upload
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  //upload file to server
   const handleUploadClick = () => {
     fileInputRef.current?.click(); 
   };
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
+    setIsProcessing(true);
 
     for (const file of Array.from(e.target.files)) {
       const formData = new FormData();
       formData.append('file', file);       // field name = "file" (server expects this)
-
+      const idx = pushPlaceholder('Processing…' + file.name);
       try {
-        const res = await fetch('/api/upload', {
+        const res = await fetch('/api/upload/file', {
           method: 'POST',
           body: formData,
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.message ?? 'Upload failed');
+        if (data.saved) {
+          console.log('onDataSaved fired');     // DEBUG
+          onDataSaved?.();
+        }
 
         // Optional confirmation bubble in the chat
-        setChatHistory(h => [
-          ...h,
-          {
-            from: 'ai',
-            message: `✅ Uploaded **${file.name}**.`,
-            time: new Date().toISOString(),
-          },
-        ]);
+        replacePlaceholder(idx, `✅ Uploaded **${file.name}**.`);
       } catch (err) {
         console.error(err);
-        setChatHistory(h => [
-          ...h,
-          {
-            from: 'ai',
-            message: `⚠️  Upload of *${file.name}* failed.`,
-            time: new Date().toISOString(),
-          },
-        ]);
+        replacePlaceholder(idx, `⚠️  Upload of *${file.name}* failed.`);
       }
     }
-
+    setIsProcessing(false);
     e.target.value = '';                   // allow re-selecting same file later
   };
 
@@ -119,37 +150,50 @@ const AIChatInterface = ({
 
   // POST user prompt -> /api/aichat/chat, append both sides of exchange to history
   const handleSend = async () => {
-    const trimmed = chatMessage.trim()
-    if (!trimmed) return
+    const trimmed = chatMessage.trim();
+    if (!trimmed || isProcessing) return;
   
-    // 1) Build the *new* history array including the just-typed user message
-    const newHistory = [
-      ...chatHistory,
-      { from: 'user' as const, message: trimmed, time: new Date().toISOString() },
-    ]
+    setChatMessage('');
+    setIsProcessing(true);
   
-    // 2) Optimistically update UI
-    setChatHistory(newHistory)
-    setChatMessage('')
+    // 1️⃣  Build the user bubble and show it immediately
+    const userMsg: ChatItem = { from: 'user', message: trimmed, time: new Date().toISOString() };
+    setChatHistory(prev => [...prev, userMsg]);
   
-    // 3) Send the *full* history to the server
-    const res = await fetch('/api/chat', {
+    // 2️⃣  Prepare the payload **without** the placeholder
+    const historyForServer = [...chatHistory, userMsg];
+  
+    // 3️⃣  Fire the request but don’t await yet
+    const responsePromise = fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ history: newHistory }),
-    })
-    const data = await res.json()
+      body: JSON.stringify({ history: historyForServer }),
+    }).then(r => r.json());
   
-    if (data.reply) {
-      // 4) Append the AI’s reply when it comes back
-      setChatHistory(current => [
-        ...current,
-        { from: 'ai' as const, message: data.reply, time: new Date().toISOString() },
-      ])
-    } else {
-      console.error('chat error', data.error)
-    }
-  }
+    // 4️⃣  Now append the placeholder and remember its index
+    let placeholderIdx = -1;
+    setChatHistory(prev => {
+      placeholderIdx = prev.length;                  // index where the placeholder lands
+      return [
+        ...prev,
+        { from: 'ai', message: 'Processing…', time: new Date().toISOString(), isPlaceholder: true },
+      ];
+    });
+  
+    // 5️⃣  Await the reply and swap the placeholder
+    const data = await responsePromise;
+    setIsProcessing(false);
+  
+    setChatHistory(prev =>
+      prev.map((m, i) =>
+        i === placeholderIdx
+          ? { ...m, message: data.reply ?? `⚠️  ${data.error ?? 'Chat error'}`, isPlaceholder: false }
+          : m,
+      ),
+    );
+  
+    if (data.saved) onDataSaved?.();
+  };
 
 
   return (
@@ -218,15 +262,21 @@ const AIChatInterface = ({
                     </div>
                     <div className="bg-slate-50 rounded-lg p-4 max-w-md">
                       <p className="text-sm text-slate-700">{item.message}</p>
-                      <p className="text-xs text-slate-500">{item.time}</p>
+                      <p className="text-xs text-slate-500">{formatTimestamp(item.time)}</p>
                     </div>
                   </div>
                 ) : (
-                  /* ---------- USER message (RIGHT, no icon) ---------- */
-                  <div key={idx} className="flex justify-end">
+ /* ---------- USER message (RIGHT, with icon) ---------- */
+                  <div key={idx} className="flex items-start justify-end space-x-3">
+                    {/* chat bubble */}
                     <div className="bg-blue-600 text-white rounded-lg p-4 max-w-md">
                       <p className="text-sm">{item.message}</p>
-                      <p className="text-xs opacity-80 text-right">{item.time}</p>
+                      <p className="text-xs opacity-80 text-right">{formatTimestamp(item.time)}</p>
+                    </div>
+
+                    {/* default user avatar */}
+                    <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-black" />
                     </div>
                   </div>
                 )
@@ -288,6 +338,7 @@ const AIChatInterface = ({
 
                 <Button
                   onClick={handleUploadClick}
+                  disabled={isProcessing}
                   variant="ghost"
                   size="sm"
                   className="absolute right-2 top-2 p-1 h-8 w-8"
@@ -296,7 +347,7 @@ const AIChatInterface = ({
                   <Upload className="w-4 h-4 text-slate-600" />
                 </Button>
               </div>
-              <Button onClick={handleSend} className="bg-blue-600 hover:bg-blue-700 self-end">
+              <Button onClick={handleSend} disabled={isProcessing} className="bg-blue-600 hover:bg-blue-700 self-end">
                 <Send className="w-4 h-4" />
               </Button>
             </div>
