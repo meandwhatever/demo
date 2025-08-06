@@ -1,0 +1,60 @@
+{
+  "shipper": {
+    "name": "UBI LOGISTICS (CHINA) LIMITED",
+    "address": "SHANGHAI BRANCH A302-304, JIN YING PLAZA NO.1518 MIN SHENG ROAD PUDONG, SHANGHAI, CHINA"
+  },
+  "consignee": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD FORT SMITH, AR 72903"
+  },
+  "notify_party": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD FORT SMITH, AR 72903"
+  },
+  "shipment": {
+    "mbl_number": "ONEYSH4KB0156900",
+    "carrier_scac_code": "",
+    "carrier_booking_number": "SH4KB0156900",
+    "vessel_name": "HMM TOPAZ",
+    "voyage_number": "002E",
+    "port_of_loading": "SHANGHAI",
+    "port_of_discharge": "LOS ANGELES, CA",
+    "place_of_receipt": "SHANGHAI",
+    "place_of_delivery": "LOS ANGELES, CA",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": "2024-10-22",
+    "mode": "FCL",
+    "freight_term": "Collect",
+    "freight_service": "",
+    "total_number_of_containers": 1,
+    "total_weight": "2464.000 KGS",
+    "total_volume": "9.000 CBM",
+    "total_package": "88"
+  },
+  "freight_charges": [
+    {
+      "charge_name": "Ocean Freight",
+      "rate": null,
+      "quantity": null,
+      "unit(Currency)": "",
+      "amount": null,
+      "prepaid or collect": "collect"
+    }
+  ],
+  "containers": [
+    {
+      "container_number": "ONEU2481262",
+      "seal_number": "CN70596AL",
+      "container_type": "20GP",
+      "number_of_packages": 88,
+      "package_uom": "DRUMS",
+      "weight": 2464,
+      "weight_uom": "KGS",
+      "volume": 9,
+      "volume_uom": "CBM",
+      "product_item_description": "88 DRUMS IN TOTAL 1X20ST CONTAINER(S) SAID TO CONTAIN: PACLOBUTRAZOL TECHNICAL PO NO.:ARG-P033000789 HS CODE:2933990019 UN 3077 CLASS 9 PG III PREMIUM FAK 990144 SH> TEL:86-21-61047111",
+      "product_item_hscode": "2933990019"
+    }
+  ]
+}

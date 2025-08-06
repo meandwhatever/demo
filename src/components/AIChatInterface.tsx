@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, ChangeEvent } from 'react';
 
 import { Sparkles, Send, Upload, History, ChevronUp, ChevronDown, MessageCircle, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ChatItem } from '@/pages/Index';
+import { Dispatch, SetStateAction } from 'react';
 
 /** Format an ISO string into “Jul 21, 12:34 PM CDT” in the user’s time zone */
 const formatTimestamp = (iso: string) =>
@@ -29,17 +31,11 @@ interface AIChatInterfaceProps {
   onUploadClick?: () => void;
   //for realtime data saving and updating
   onDataSaved?: () => void;
-
-  
+  chatHistory: ChatItem[];
+  setChatHistory?: Dispatch<SetStateAction<ChatItem[]>>;  
 }
 
-type ChatItem = {
-  message: string;
-  time: string;
-  from: 'user' | 'ai';
-  /** true only for the temporary “Processing…” bubble */
-  isPlaceholder?: boolean;
-};
+
 
 const AIChatInterface = ({
   activeTab,
@@ -53,12 +49,12 @@ const AIChatInterface = ({
   showTitleBar = true,
   onUploadClick,
   onDataSaved,
+  chatHistory,
+  setChatHistory,
 }: AIChatInterfaceProps) => {
   // Toggle chat‑history side panel
   const [showChatHistory, setShowChatHistory] = useState(false);
 
-  // Conversation state managed locally then persisted remotely if needed
-  const [chatHistory, setChatHistory] = useState<ChatItem[]>([]);
 
   // Hold last AI reply so we can surface it elsewhere if desired
   const [aiReply, setAiReply] = useState('');
@@ -124,6 +120,20 @@ const [isProcessing, setIsProcessing] = useState(false);
           console.log('onDataSaved fired');     // DEBUG
           onDataSaved?.();
         }
+        //update the shipment json
+        await fetch('/api/update/shipment', {
+          method:'POST', 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file_Id: data.fileId,
+            file_Type: data.fileType,
+            rawJson: data.rawJson,
+            mode: data.rawJson.shipment.mode,
+            user: 'user', //not implemented yet
+          }),
+        });
+
+
 
         // Optional confirmation bubble in the chat
         replacePlaceholder(idx, `✅ Uploaded **${file.name}**.`);

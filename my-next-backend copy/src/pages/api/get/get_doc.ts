@@ -1,3 +1,4 @@
+//for the recent documents page
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';        // adjust import if your client lives elsewhere
 

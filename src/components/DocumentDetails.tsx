@@ -1,3 +1,5 @@
+// main document details page
+
 import { useState, useEffect } from "react";
 import {
   ArrowLeft,
@@ -10,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import PDFViewer from "@/components/PDFViewer";
 import DocumentFields from "@/components/DocumentFields";
 import AIChatInterface from "@/components/AIChatInterface";
+import { ChatItem } from "@/pages/Index";
+import { Dispatch, SetStateAction } from "react";
 
 interface DocumentDetailsProps {
   /**
@@ -28,6 +32,8 @@ interface DocumentDetailsProps {
    * URL of the document that was clicked in RecentDocuments.
    */
   documentUrl: string;
+  chatHistory: ChatItem[];
+  setChatHistory: Dispatch<SetStateAction<ChatItem[]>>;
 
 }
 
@@ -38,7 +44,7 @@ interface DocumentDetailsProps {
  * Styling and layout are copied from the previous `DocumentReview` mock‑up
  * (except for the top navigation bar, which lives in the parent layout).
  */
-const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentType, onClose, documentUrl }) => {
+const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentType, onClose, documentUrl, chatHistory, setChatHistory }) => {
   // ────────────────────────────────────────────────────────────────────────────
   // Local state
   // ────────────────────────────────────────────────────────────────────────────
@@ -68,7 +74,7 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
         });
         if (!res.ok) throw new Error(res.statusText);
         const data = await res.json();
-        setDocumentData({ name: data.name, type: data.type, rawJson: data.rawJson });
+        setDocumentData({ name: data.name, type: documentType, rawJson: data.rawJson });
       } catch (err) {
         /* eslint‑disable no‑console */
         console.error("Failed to fetch document", err);
@@ -115,7 +121,14 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
   // Render
   // ────────────────────────────────────────────────────────────────────────────
   return (
+
+
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* <h1>Hi before header</h1>
+      <h1>documentId: {documentId}</h1>
+      <h1>documentType: {documentType}</h1>
+      <h1>documentUrl: {documentUrl}</h1> */}
+
       {/* <h1>Hi before header</h1> */}
       {/* Simple top bar (replaces the old nav) */}
       <header className="flex items-center justify-between bg-white border-b border-slate-200 px-6 py-3 shadow-sm">
@@ -201,8 +214,8 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({ documentId, documentT
                 isVisible={isAIVisible}
                 onToggle={() => setIsAIVisible(!isAIVisible)}
                 showTitleBar={false}
-
-
+                chatHistory={chatHistory}
+                setChatHistory={setChatHistory}
               />
             </div>
           )}

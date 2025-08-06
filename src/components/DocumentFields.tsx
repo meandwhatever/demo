@@ -87,6 +87,7 @@ interface DocumentFieldsProps {
 
 const DocumentFields = ({ documentType = 'Commercial Invoice', rawJson, docId }: DocumentFieldsProps) => {
   documentType = documentType.toLowerCase();
+
   const [jsonBackupData, setJsonBackupData] = useState<Record<string, any>>(rawJson);
 
   const [jsonData, setJsonData] = useState<Record<string, any>>(rawJson);
@@ -1285,6 +1286,10 @@ const DocumentFields = ({ documentType = 'Commercial Invoice', rawJson, docId }:
 
   return (
     <div className="h-full flex flex-col">
+      {/* <h1>Hi before header</h1>
+      <h1>docId: {docId}</h1>
+      <h1>documentType: {documentType}</h1> */}
+
       {/* Header */}
       <div className="p-4 border-b border-slate-200 flex-shrink-0">
         <div className="flex items-center justify-between">

@@ -11,8 +11,27 @@ import DocumentDetails from '@/components/DocumentDetails';
 import FileUpload from '@/components/FileUpload';
 import ReviewList from '@/components/ReviewList';
 import AIChatToggle from '@/components/AIChatToggle';
+import RecentShipments from '@/components/RecentShipments';
+import ShipmentDetails from '@/components/ShipmentDetails';
+
+export type ChatItem = {
+    message: string;
+    time: string;
+    from: 'user' | 'ai';
+    /** true only for the temporary “Processing…” bubble */
+    isPlaceholder?: boolean;
+  };
 
 const Index = () => {
+    // Conversation state managed locally then persisted remotely if needed
+    const [chatHistory, setChatHistory] = useState<ChatItem[]>([]);
+
+
+
+
+
+
+
   const [chatMessage, setChatMessage] = useState('');
   const [showClassificationDetails, setShowClassificationDetails] = useState(false);
   const [classificationDetailsTitle, setClassificationDetailsTitle] = useState('');
@@ -43,6 +62,12 @@ const Index = () => {
   //for realtime data saving and updating
   const [dbBump, setDbBump] = useState(0);
 
+
+
+
+//functions for showing and hiding panels
+//functions will be passed to child components as props, which will be called and set the state of the parent component
+//which the useState will then be passed to the child component as props
   const handleShowClassificationDetails = (title: string) => {
     setClassificationDetailsTitle(title);
     setShowClassificationDetails(true);
@@ -68,6 +93,20 @@ const Index = () => {
     setSelectedDocumentType(documentType);
     setSelectedDocumentUrl(documentUrl);
     setShowDocumentDetails(true);
+    setShowClassificationDetails(false);
+    setShowClassificationDetailsPage(false);
+    setShowReviewList(false);
+  };
+
+  //for shipment details
+  const [selectedShipmentId, setSelectedShipmentId] = useState('');
+  const [selectedShipmentType, setSelectedShipmentType] = useState('');
+  const [showShipmentDetails, setShowShipmentDetails] = useState(false);
+
+  const handleViewShipmentDetails = (shipmentId: string, mode: string) => {
+    setSelectedShipmentId(shipmentId);
+    setSelectedShipmentType(mode);
+    setShowShipmentDetails(true);
     setShowClassificationDetails(false);
     setShowClassificationDetailsPage(false);
     setShowReviewList(false);
@@ -115,6 +154,20 @@ const Index = () => {
               documentType={selectedDocumentType}
               onClose={() => setShowDocumentDetails(false)}
               documentUrl={selectedDocumentUrl}
+              chatHistory={chatHistory}
+              setChatHistory={setChatHistory}
+              
+            />
+          </div>
+        ) : showShipmentDetails ? (
+          <div className="w-full">
+            <ShipmentDetails 
+            shipmentId={selectedShipmentId}
+            mode={selectedShipmentType}
+            onClose={() => setShowShipmentDetails(false)}
+            chatHistory={chatHistory}
+            setChatHistory={setChatHistory}
+          
             />
           </div>
         ) : (
@@ -127,6 +180,7 @@ const Index = () => {
               />
               <RecentClassifications onViewDetails={handleViewClassificationDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />
               <RecentDocuments onViewDocumentDetails={handleViewDocumentDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />
+              <RecentShipments onViewShipmentDetails={handleViewShipmentDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />
             </div>
 
             {/* Right Panel - Classification Details & AI Interface */}
@@ -165,6 +219,8 @@ const Index = () => {
                     description={selectedDescription}
                     hsCode={selectedHsCode}
                     onClose={() => setShowClassificationDetailsPage(false)}
+                    chatHistory={chatHistory}
+                    setChatHistory={setChatHistory}
                   />
                 </div>
               )}
@@ -197,6 +253,8 @@ const Index = () => {
                         : (showClassificationDetails || showReviewList ? "h-2/5" : "h-full"))
                 }>
                   <AIChatInterface 
+                    chatHistory={chatHistory}
+                    setChatHistory={setChatHistory}
                     activeTab="classification"
                     setActiveTab={() => {}}
                     chatMessage={chatMessage}

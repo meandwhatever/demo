@@ -34,7 +34,7 @@ model hbl_Document {
 
 model Shipment {
   /// Internal UUID primary key
-  id             String   @id @default(uuid())
+  id             String   @id @default(utoincrement())
   /// Your “ocn-xxxxxx” business identifier
   shipmentId     String   @unique
   /// FCL, LCL, AIR, etc.

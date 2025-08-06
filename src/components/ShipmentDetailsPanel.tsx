@@ -2,8 +2,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Shipment } from './ShipmentDetails';
 
-const ShipmentDetailsPanel = () => {
+interface ShipmentDetailsPanelProps {
+  shipment: Shipment;
+}
+
+const ShipmentDetailsPanel = ({ shipment }: ShipmentDetailsPanelProps) => {
+  //mock data
   const containerData = [
     {
       containerId: 'MSKU7654321',
@@ -48,11 +54,39 @@ const ShipmentDetailsPanel = () => {
     }
   ];
 
+  //console.log("shipment.rawJson", shipment.rawJson);
+
   return (
     <div className="h-full overflow-y-auto p-6">
       <h2 className="text-xl font-semibold text-slate-900 mb-6">Shipment Details</h2>
       
+      {/* test data */}
       <div className="space-y-6">
+      <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">test</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-medium text-slate-900 mb-2">Shipper</h4>
+                <p className="text-sm text-slate-700">
+                  HI
+
+                </p>
+              </div>
+              <div>
+                <h4 className="font-medium text-slate-900 mb-2">Consignee</h4>
+                <p className="text-sm text-slate-700">
+                  XYZ Imports LLC<br/>
+                  456 Commerce Street<br/>
+                  Los Angeles, CA 90210<br/>
+                  Tel: +1-555-123-4567
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         {/* Involved Party Section */}
         <Card>
           <CardHeader>

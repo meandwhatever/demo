@@ -1,36 +1,42 @@
+// pages/api/get/get_doc_detail.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '@/lib/prisma';          // adjust the path if your prisma helper lives elsewhere
+import { PrismaClient } from '@prisma/client';
 
-/**
- * GET /api/alerts
- * Returns all classifications that still need manual review, ordered most‑recent first.
- * The shape of each record is kept small to minimise network payloads.
- */
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
-  }
+const prisma = new PrismaClient();
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST')
+    return res.status(405).json({ error: 'Method not allowed' });
+
+  const { documentId, documentType } = req.body as {
+    documentId: string;
+    documentType: 'mbl' | 'hbl';
+  };
+  console.log("get_doc_detail.ts called")
+  console.log("documentId", documentId)
+  console.log("documentType", documentType)
 
   try {
-    const alerts = await prisma.classification.findMany({
-      where: { need_Review: true },          // Prisma substitutes the correct SQL for boolean comparison
-      orderBy: { createdAt: 'desc' },        // assumes you track when the record was created / updated
-      select: {                              // expose only what the UI needs
-        id: true,
-        hs_code: true,
-        product_title: true,
-        confidence: true,
-        product_description: true,
-      },
-    });
+    const record =
+      documentType === 'mbl'
+        ? await prisma.mbl_Document.findUnique({
+            where: { id: parseInt(documentId) },
+            select: { file_id: true, rawJson: true },
+          })
+        : await prisma.hbl_Document.findUnique({
+            where: { id: parseInt(documentId) },
+            select: { file_id: true, rawJson: true },
+          });
 
-    return res.status(200).json(alerts);
+    if (!record) return res.status(404).json({ error: 'Not found' });
+
+    res.json({
+      name: record.file_id,
+      type: documentType.toUpperCase(), // MBL | HBL
+      rawJson: record.rawJson,          // <- the useful bit
+    });
   } catch (err) {
-    console.error('Failed to fetch review alerts', err);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error(err);
+    res.status(500).json({ error: 'Internal error' });
   }
 }

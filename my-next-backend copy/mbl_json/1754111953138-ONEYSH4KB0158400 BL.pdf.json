@@ -1,0 +1,60 @@
+{
+  "shipper": {
+    "name": "UBI LOGISTICS (CHINA) LIMITED",
+    "address": "SHANGHAI BRANCH, A302-304, JIN YING PLAZA, NO.1518 MIN SHENG ROAD, PUDONG, SHANGHAI, CHINA"
+  },
+  "consignee": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD, FORT SMITH, AR 72903"
+  },
+  "notify_party": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD, FORT SMITH, AR 72903"
+  },
+  "shipment": {
+    "mbl_number": "ONEYSH4KB0158400",
+    "carrier_scac_code": "",
+    "carrier_booking_number": "SH4KB0158400",
+    "vessel_name": "HMM TOPAZ",
+    "voyage_number": "002E",
+    "port_of_loading": "SHANGHAI",
+    "port_of_discharge": "LOS ANGELES, CA",
+    "place_of_receipt": "SHANGHAI",
+    "place_of_delivery": "LOS ANGELES, CA",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": "2024-10-22",
+    "mode": "FCL",
+    "freight_term": "Collect",
+    "freight_service": "",
+    "total_number_of_containers": 1,
+    "total_weight": "19838.000 KGS",
+    "total_volume": "30.000 CBM",
+    "total_package": "91 DRUMS"
+  },
+  "freight_charges": [
+    {
+      "charge_name": "OCEAN FREIGHT",
+      "rate": null,
+      "quantity": null,
+      "unit(Currency)": "",
+      "amount": null,
+      "prepaid or collect": "collect"
+    }
+  ],
+  "containers": [
+    {
+      "container_number": "TLLU6097229",
+      "seal_number": "CN223674Q",
+      "container_type": "40GP",
+      "number_of_packages": 91,
+      "package_uom": "DRUMS",
+      "weight": 19838,
+      "weight_uom": "KGS",
+      "volume": 30,
+      "volume_uom": "CBM",
+      "product_item_description": "TRINEXAPAC-ETHYL TECHNICAL\nPO NO.: ARG-PO33000804856\nHS CODE: 2918300015\nUN 3077 CLASS 9 PG III\nPREMIUM FAK 990144\nSH> TEL:86-21-61047111",
+      "product_item_hscode": "2918300015"
+    }
+  ]
+}

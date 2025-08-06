@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import AIChatInterface from './AIChatInterface';
+import { ChatItem } from '@/pages/Index';
+import { Dispatch, SetStateAction } from 'react';
 
 interface ClassificationDetailsPageProps {
   hsCode: string;
@@ -15,9 +17,11 @@ interface ClassificationDetailsPageProps {
   product: string;
   description: string;
   onClose: () => void;
+  chatHistory: ChatItem[];
+  setChatHistory: Dispatch<SetStateAction<ChatItem[]>>;
 }
 
-const ClassificationDetailsPage = ({ hsCode, id, confidence, date, product, description, onClose }: ClassificationDetailsPageProps) => {
+const ClassificationDetailsPage = ({ hsCode, id, confidence, date, product, description, onClose, chatHistory, setChatHistory }: ClassificationDetailsPageProps) => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
 
@@ -203,6 +207,8 @@ const ClassificationDetailsPage = ({ hsCode, id, confidence, date, product, desc
                   setChatMessage={setChatMessage}
                   hideQuickSuggestions={true}
                   showTitleBar={false}
+                  chatHistory={chatHistory}
+                  setChatHistory={setChatHistory}
                 />
               </div>
             </div>

@@ -69,7 +69,7 @@ export default async function handler(
 
 
 
-  // Only allow POST
+  //POST request: upload a file
   if (req.method !== "POST") {
     res.status(405).json({ success: false, message: "Method not allowed" });
     return;

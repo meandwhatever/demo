@@ -1,0 +1,77 @@
+{
+  "shipper": {
+    "name": "FOSHAN SIRIO HOME&GARDEN FURNISHING INC.",
+    "address": "2-3/F, BLOCK 18, NO.4 WISDOM ROAD, CHANCHENG, FOSHAN, GUANGDONG, CHINA 528000"
+  },
+  "consignee": {
+    "name": "SIRIO NORTH AMERICA INC.",
+    "address": "1431 E. BEAMER ST, WOODLAND, CA 95776, UNITED STATES"
+  },
+  "notify_party": {
+    "name": "SCARBROUGH INTERNATIONAL, LTD.",
+    "address": "7280 NW 87TH TERRACE SUITE 300, KANSAS CITY, MO 64153"
+  },
+  "shipment": {
+    "mbl_number": "ZIMUSHH31634756",
+    "carrier_scac_code": "",
+    "carrier_booking_number": "ZIMUSHH31634756",
+    "vessel_name": "ZIM SCORPIO",
+    "voyage_number": "4/E",
+    "port_of_loading": "YANTIAN (GD)",
+    "port_of_discharge": "JACKSONVILLE (FL)",
+    "place_of_receipt": "",
+    "place_of_delivery": "",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": "2025-02-22",
+    "mode": "FCL",
+    "freight_term": "Prepaid",
+    "freight_service": "",
+    "total_number_of_containers": 3,
+    "total_weight": "10618.19 kg",
+    "total_volume": "191.83 m3",
+    "total_package": "341 cartons"
+  },
+  "freight_charges": [],
+  "containers": [
+    {
+      "container_number": "CAIU4339308",
+      "seal_number": "A4250270648",
+      "container_type": "40HC",
+      "number_of_packages": 88,
+      "package_uom": "CNT",
+      "weight": 3084.4,
+      "weight_uom": "KGS",
+      "volume": 64.22,
+      "volume_uom": "M3",
+      "product_item_description": "ALUMINUM POLYETHYLENE RATTAN WICKER CHAIR:940179; ALUMINUM POLYETHYLENE RATTAN WICKER TABLE:940320",
+      "product_item_hscode": "940179,940320"
+    },
+    {
+      "container_number": "GAOU6142385",
+      "seal_number": "A4250280023",
+      "container_type": "40HC",
+      "number_of_packages": 165,
+      "package_uom": "CNT",
+      "weight": 4449.39,
+      "weight_uom": "KGS",
+      "volume": 63.39,
+      "volume_uom": "M3",
+      "product_item_description": "ALUMINUM POLYETHYLENE RATTAN WICKER CHAIR:940179; ALUMINUM POLYETHYLENE RATTAN WICKER TABLE:940320",
+      "product_item_hscode": "940179,940320"
+    },
+    {
+      "container_number": "TCNU2509585",
+      "seal_number": "A4250281130",
+      "container_type": "40HC",
+      "number_of_packages": 88,
+      "package_uom": "CNT",
+      "weight": 3084.4,
+      "weight_uom": "KGS",
+      "volume": 64.22,
+      "volume_uom": "M3",
+      "product_item_description": "ALUMINUM POLYETHYLENE RATTAN WICKER CHAIR:940179; ALUMINUM POLYETHYLENE RATTAN WICKER TABLE:940320",
+      "product_item_hscode": "940179,940320"
+    }
+  ]
+}
