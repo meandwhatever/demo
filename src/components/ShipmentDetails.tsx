@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, User, Settings, ChevronDown, ChevronUp, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,11 +10,59 @@ import AIChatInterface from '@/components/AIChatInterface';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { ChatItem } from '@/pages/Index';
+import ValidationFields from '@/components/ValidationFields';
+
+
+/* shipment json has the following structure:
+1.   "shipment_id": String,
+2.     "created_at": Date,
+3.     "created_by": String,
+4.  "involved_party": {
+5.         "shipper_name": String,
+6.         "shipper_address": String,
+7.         "consignee_name": String,
+8.         "consignee_address": String,
+9.         "orgin_agent_name": String,
+10.         "orgin_agent_address": String,         
+11.         "destination_agent_name": String,   
+12.         "destination_agent_address": String,
+13. 
+
+1.   },
+2.  "shipment": {
+3.     "master_bill_of_lading_number": String,
+4.     "house_bill_of_lading_number": String,
+5.     "vessel_name": String,
+6.     "voyage_number": String,
+7.     "port_of_loading": String,
+8.     "port_of_discharge": String,
+9.     "place_of_receipt": String,       
+10.     "place_of_delivery": String,
+11.     "freight_mode": string,
+12.  "total_number_of_containers": number,
+13.     "total_weight": number,
+14.     "total_volumn": number,
+15.     "total_package": number
+16.   },
+17. "containers": [
+18.     {
+19.       "container_number": string,
+20.       "seal_number": string,
+21.       "container_type": string,
+22.       "number_of_packages": number,
+23.       "package_uom": string,
+24.       "weight": number,
+25.       "weight_uom": string,
+26.       "volume": number,
+27.       "volume_uom": string,
+28.       "product_item_description": string,
+29.       "product_item_hscode": string
+30.     }
+*/
 
 
 interface ShipmentDetailsProps {
   shipmentId: string;
-  mode: string;
   onClose: () => void;
   chatHistory: ChatItem[];
   setChatHistory: (chatHistory: ChatItem[]) => void;
@@ -62,13 +110,16 @@ export interface Shipment {
   containers: any[] | null;
   freightCharges: any[] | null;
   rawJson: any | null;
+  mblRawJson: any | null;
+  hblRawJson: any | null;
 }
 
-const ShipmentDetails = ({ shipmentId, mode, onClose, chatHistory, setChatHistory }: ShipmentDetailsProps) => {
+const ShipmentDetails = ({ shipmentId,  onClose, chatHistory, setChatHistory }: ShipmentDetailsProps) => {
   const [chatMessage, setChatMessage] = useState('');
   const [activeDocument, setActiveDocument] = useState('MBL');
   const [isAIVisible, setIsAIVisible] = useState(false);
   const navigate = useNavigate();
+
 
 
 
@@ -84,30 +135,30 @@ const ShipmentDetails = ({ shipmentId, mode, onClose, chatHistory, setChatHistor
   };
 
   const [shipmentData, setShipmentData] = useState<Shipment | null>(null);
+  const [loading, setLoading] = useState(false);
 
 
-  useEffect(() => {
-    async function fetchShipment() {
-      try {
-        const res = await fetch(`/api/get/get_shipment_details`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ shipmentId }),
-            }
-        );
-
-        if (!res.ok) throw new Error('error when fetching shipment details');
-        const data: Shipment = await res.json();
-        setShipmentData(data);
-      } catch (err) {
-        console.error('Failed to load shipment', err);
-      }
+  const fetchShipment = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/get/get_shipment_details', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shipmentId }),
+      });
+      if (!res.ok) throw new Error('error when fetching shipment details');
+      const data: Shipment = await res.json();
+      setShipmentData(data);
+    } catch (err) {
+      console.error('Failed to load shipment', err);
+    } finally {
+      setLoading(false);
     }
-    fetchShipment();
   }, [shipmentId]);
+  
+  useEffect(() => {
+    fetchShipment();
+  }, [fetchShipment]);
 
   const documents = [
     { id: 'MBL', name: 'MBL_12345.pdf', type: 'MBL', url: shipmentData?.mbl_url },
@@ -151,20 +202,12 @@ const ShipmentDetails = ({ shipmentId, mode, onClose, chatHistory, setChatHistor
             
             {documents.map((doc) => (
               <TabsContent key={doc.id} value={doc.id} className="flex-1 mt-0">
-                <h1>before pdf viewer</h1>
-                <h1>shipmentId: {shipmentId}</h1>
                 <PDFViewer 
                   documentName={doc.name}
                   documentType={doc.type}
                   metadata={getDocumentMetadata(doc.type)}
                   documentUrl={doc.url}
                 />
-                <h1>after pdf viewer</h1>
-                <h1>mode: {shipmentData?.mode}</h1>
-                <h1>mbl_Number: {shipmentData?.mbl_Number}</h1>
-                <h1>mbl_url: {shipmentData?.mbl_url}</h1>
-                <h1>hbl_Number: {shipmentData?.hbl_Number}</h1>
-
               </TabsContent>
             ))}
           </Tabs>
@@ -172,12 +215,17 @@ const ShipmentDetails = ({ shipmentId, mode, onClose, chatHistory, setChatHistor
 
         {/* Right Panel - Shipment Details and AI Chat */}
         <div className="w-1/2 bg-white flex flex-col">
-          <div className={`${isAIVisible ? 'flex-[3]' : 'flex-1'} border-b border-slate-200 overflow-hidden`}>
-            <h1>before shipment details panel</h1>
-            <h1>RawJson</h1>
-            <h1>{JSON.stringify(shipmentData?.rawJson)}</h1>
-            <ShipmentDetailsPanel shipment={shipmentData} />
-            <h1>after shipment details panel</h1>
+        <div className={`${isAIVisible ? 'flex-[3]' : 'flex-1'} border-b border-slate-200 overflow-hidden`}>
+            {loading || !shipmentData ? (
+              <div className="p-6 text-sm text-slate-600">Loading…</div>
+            ) : shipmentData.rawJson ? (
+              <ShipmentDetailsPanel shipment={shipmentData} />
+            ) : (
+              <ValidationFields
+                shipmentData={shipmentData}
+                onBuilt={fetchShipment}  // when child finishes building, refresh to show details panel
+              />
+            )}
           </div>
           
           {/* AI Assistant Toggle Button - Dashboard style */}

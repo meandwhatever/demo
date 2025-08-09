@@ -21,12 +21,14 @@ export default async function handler(
   const {
     file_Id: fileId,
     file_Type: fileType,
+    file_url: fileUrl,
     rawJson,
     mode,
     user,
   } = req.body as {
     file_Id: string;
     file_Type: 'mbl' | 'hbl';
+    file_url: string;
     rawJson: any;
     mode: string;
     user: string;

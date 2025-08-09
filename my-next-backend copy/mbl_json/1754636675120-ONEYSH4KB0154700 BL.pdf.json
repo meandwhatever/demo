@@ -1,0 +1,51 @@
+{
+  "shipper": {
+    "name": "UBI LOGISTICS (CHINA) LIMITED",
+    "address": "A302-304, JIN YING PLAZA, NO.1518 MIN SHENG ROAD, PUDONG, SHANGHAI, CHINA"
+  },
+  "consignee": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD, FORT SMITH, AR 72903"
+  },
+  "notify_party": {
+    "name": "ARCBEST INTERNATIONAL INC",
+    "address": "3801 OLD GREENWOOD ROAD, FORT SMITH, AR 72903"
+  },
+  "shipment": {
+    "mbl_number": "ONEYSH4KB0154700",
+    "carrier_scac_code": "ONE",
+    "carrier_booking_number": "SH4KB0154700",
+    "vessel_name": "HMM TOPAZ",
+    "voyage_number": "002E",
+    "port_of_loading": "SHANGHAI",
+    "port_of_discharge": "LOS ANGELES, CA",
+    "place_of_receipt": "SHANGHAI",
+    "place_of_delivery": "LOS ANGELES, CA",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": "2024-10-22",
+    "mode": "FCL",
+    "freight_term": "Collect",
+    "freight_service": "CY/CY",
+    "total_number_of_containers": 1,
+    "total_weight": "18144.000 KGS",
+    "total_volume": "36.000 CBM",
+    "total_package": "36 BAGS"
+  },
+  "freight_charges": [],
+  "containers": [
+    {
+      "container_number": "SEGU5535426",
+      "seal_number": "CN22256AQ",
+      "container_type": "40GP",
+      "number_of_packages": 36,
+      "package_uom": "BAGS",
+      "weight": 18144,
+      "weight_uom": "KGS",
+      "volume": 36,
+      "volume_uom": "CBM",
+      "product_item_description": "CLOPYRALID TECHNICAL",
+      "product_item_hscode": "2933399028"
+    }
+  ]
+}

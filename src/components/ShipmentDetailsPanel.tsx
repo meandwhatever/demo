@@ -1,208 +1,175 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Shipment } from './ShipmentDetails';
 
 interface ShipmentDetailsPanelProps {
   shipment: Shipment;
 }
 
+const LabelRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div className="flex items-start justify-between py-1">
+    <span className="text-xs text-slate-500">{label}</span>
+    <span className="text-xs font-medium text-slate-900 max-w-[65%] text-right break-words">
+      {value ?? '-'}
+    </span>
+  </div>
+);
+
+const s = (v: any) => (v === null || v === undefined || v === '' ? '-' : String(v));
+
 const ShipmentDetailsPanel = ({ shipment }: ShipmentDetailsPanelProps) => {
-  //mock data
-  const containerData = [
-    {
-      containerId: 'MSKU7654321',
-      sealId: '12345678',
-      containerType: '40\' HC',
-      weight: '15,000 KGS',
-      volume: '67.5 CBM'
-    },
-    {
-      containerId: 'TCLU9876543',
-      sealId: '87654321',
-      containerType: '20\' GP',
-      weight: '8,500 KGS',
-      volume: '28.2 CBM'
-    }
-  ];
+  const data: any = shipment?.rawJson || null;
 
-  const productData = [
-    {
-      title: 'Electronic Components - Capacitors',
-      description: 'High-quality ceramic capacitors for industrial use',
-      hsCode: '8532.24.00',
-      unit: '500 pcs',
-      unitPrice: '$2.50',
-      totalPrice: '$1,250.00'
-    },
-    {
-      title: 'Electronic Components - Resistors',
-      description: 'Carbon film resistors, various resistance values',
-      hsCode: '8533.21.00',
-      unit: '1000 pcs',
-      unitPrice: '$0.75',
-      totalPrice: '$750.00'
-    },
-    {
-      title: 'Circuit Boards',
-      description: 'Printed circuit boards for electronic devices',
-      hsCode: '8534.00.00',
-      unit: '100 pcs',
-      unitPrice: '$15.00',
-      totalPrice: '$1,500.00'
-    }
-  ];
+  if (!data) {
+    return <div className="p-6 text-sm text-slate-600">Missing shipment JSON.</div>;
+  }
 
-  //console.log("shipment.rawJson", shipment.rawJson);
+  const parties = data.involved_party ?? {};
+  const ship = data.shipment ?? {};
+  const containers: any[] = Array.isArray(data.containers) ? data.containers : [];
+  const charges: any[] = Array.isArray(data.freight_charges) ? data.freight_charges : [];
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      <h2 className="text-xl font-semibold text-slate-900 mb-6">Shipment Details</h2>
-      
-      {/* test data */}
-      <div className="space-y-6">
+    <div className="h-full overflow-y-auto p-6 space-y-6">
+      <h2 className="text-xl font-semibold text-slate-900">Shipment Details</h2>
+
+      {/* 1) Involved Parties */}
       <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">test</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-slate-900 mb-2">Shipper</h4>
-                <p className="text-sm text-slate-700">
-                  HI
-
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium text-slate-900 mb-2">Consignee</h4>
-                <p className="text-sm text-slate-700">
-                  XYZ Imports LLC<br/>
-                  456 Commerce Street<br/>
-                  Los Angeles, CA 90210<br/>
-                  Tel: +1-555-123-4567
-                </p>
-              </div>
+        <CardHeader>
+          <CardTitle className="text-lg">Involved Parties</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <LabelRow label="Shipper Name" value={s(parties.shipper_name)} />
+              <LabelRow label="Shipper Address" value={s(parties.shipper_address)} />
+              <LabelRow label="Consignee Name" value={s(parties.consignee_name)} />
+              <LabelRow label="Consignee Address" value={s(parties.consignee_address)} />
             </div>
-          </CardContent>
-        </Card>
-        {/* Involved Party Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Involved Party</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-slate-900 mb-2">Shipper</h4>
-                <p className="text-sm text-slate-700">
-                  ABC Manufacturing Co.<br/>
-                  123 Industrial Drive<br/>
-                  Shanghai, China 200000<br/>
-                  Tel: +86-21-1234-5678
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium text-slate-900 mb-2">Consignee</h4>
-                <p className="text-sm text-slate-700">
-                  XYZ Imports LLC<br/>
-                  456 Commerce Street<br/>
-                  Los Angeles, CA 90210<br/>
-                  Tel: +1-555-123-4567
-                </p>
-              </div>
+            <div className="space-y-1">
+              {/* Note: source uses 'orgin_*' in builder */}
+              <LabelRow label="Origin Agent Name" value={s(parties.orgin_agent_name)} />
+              <LabelRow label="Origin Agent Address" value={s(parties.orgin_agent_address)} />
+              <LabelRow label="Destination Agent Name" value={s(parties.destination_agent_name)} />
+              <LabelRow label="Destination Agent Address" value={s(parties.destination_agent_address)} />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Shipment Data Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Shipment Data</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-slate-900 mb-2">Origin</h4>
-                <p className="text-sm text-slate-700">Port of Shanghai, China</p>
-                <h4 className="font-medium text-slate-900 mb-2 mt-4">Vessel</h4>
-                <p className="text-sm text-slate-700">MSC MAGNIFICENT / V.234E</p>
-              </div>
-              <div>
-                <h4 className="font-medium text-slate-900 mb-2">Destination</h4>
-                <p className="text-sm text-slate-700">Port of Los Angeles, USA</p>
-                <h4 className="font-medium text-slate-900 mb-2 mt-4">Status</h4>
-                <Badge className="bg-blue-100 text-blue-800">In Transit</Badge>
-              </div>
+      {/* 2) Shipment */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Shipment</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <LabelRow label="Master B/L Number" value={s(ship.master_bill_of_lading_number)} />
+              <LabelRow label="House B/L Number" value={s(ship.house_bill_of_lading_number)} />
+              <LabelRow label="Vessel Name" value={s(ship.vessel_name)} />
+              <LabelRow label="Voyage #" value={s(ship.voyage_number)} />
+              <LabelRow label="Freight Mode" value={s(ship.freight_mode)} />
             </div>
-          </CardContent>
-        </Card>
+            <div className="space-y-1">
+              <LabelRow label="Port of Loading" value={s(ship.port_of_loading)} />
+              <LabelRow label="Port of Discharge" value={s(ship.port_of_discharge)} />
+              <LabelRow label="Place of Receipt" value={s(ship.place_of_receipt)} />
+              <LabelRow label="Place of Delivery" value={s(ship.place_of_delivery)} />
+              <LabelRow label="# Containers" value={s(ship.total_number_of_containers)} />
+              <LabelRow label="Total Weight" value={s(ship.total_weight)} />
+              <LabelRow label="Total Volume" value={s(ship.total_volume)} />
+              <LabelRow label="Total Package" value={s(ship.total_package)} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Container Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Container</CardTitle>
-          </CardHeader>
-          <CardContent>
+      {/* 3) Containers */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Containers</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {containers.length === 0 ? (
+            <div className="text-xs text-slate-500">No containers found.</div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Container ID</TableHead>
-                  <TableHead>Seal ID</TableHead>
-                  <TableHead>Container Type</TableHead>
+                  <TableHead>Container #</TableHead>
+                  <TableHead>Seal #</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Packages</TableHead>
                   <TableHead>Weight</TableHead>
                   <TableHead>Volume</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>HS Code</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {containerData.map((container, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{container.containerId}</TableCell>
-                    <TableCell>{container.sealId}</TableCell>
-                    <TableCell>{container.containerType}</TableCell>
-                    <TableCell>{container.weight}</TableCell>
-                    <TableCell>{container.volume}</TableCell>
+                {containers.map((c, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>{s(c?.container_number)}</TableCell>
+                    <TableCell>{s(c?.seal_number)}</TableCell>
+                    <TableCell>{s(c?.container_type)}</TableCell>
+                    <TableCell>
+                      {c?.number_of_packages != null
+                        ? `${c.number_of_packages} ${s(c?.package_uom)}`
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
+                      {c?.weight != null ? `${c.weight} ${s(c?.weight_uom)}` : '-'}
+                    </TableCell>
+                    <TableCell>
+                      {c?.volume != null ? `${c.volume} ${s(c?.volume_uom)}` : '-'}
+                    </TableCell>
+                    <TableCell>{s(c?.product_item_description)}</TableCell>
+                    <TableCell>{s(c?.product_item_hscode)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          )}
+        </CardContent>
+      </Card>
 
-        {/* Product Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Product</CardTitle>
-          </CardHeader>
-          <CardContent>
+      {/* 4) Freight Charges */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Freight Charges</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {charges.length === 0 ? (
+            <div className="text-xs text-slate-500">No charges found.</div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Product Title</TableHead>
-                  <TableHead>Product Description</TableHead>
-                  <TableHead>HS Code</TableHead>
-                  <TableHead>Unit</TableHead>
-                  <TableHead>Unit Price</TableHead>
-                  <TableHead>Total Price</TableHead>
+                  <TableHead>Charge Name</TableHead>
+                  <TableHead>Rate</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Unit (Currency)</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Prepaid/Collect</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {productData.map((product, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{product.title}</TableCell>
-                    <TableCell>{product.description}</TableCell>
-                    <TableCell>{product.hsCode}</TableCell>
-                    <TableCell>{product.unit}</TableCell>
-                    <TableCell>{product.unitPrice}</TableCell>
-                    <TableCell>{product.totalPrice}</TableCell>
+                {charges.map((c, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>{s(c?.charge_name)}</TableCell>
+                    <TableCell>{c?.rate != null ? String(c.rate) : '-'}</TableCell>
+                    <TableCell>{c?.quantity != null ? String(c.quantity) : '-'}</TableCell>
+                    <TableCell>{s(c?.['unit(Currency)'] ?? c?.unit ?? c?.currency)}</TableCell>
+                    <TableCell>{c?.amount != null ? String(c.amount) : '-'}</TableCell>
+                    <TableCell>{s(c?.['prepaid or collect'] ?? c?.terms)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

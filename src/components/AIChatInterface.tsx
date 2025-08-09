@@ -117,16 +117,17 @@ const [isProcessing, setIsProcessing] = useState(false);
         const data = await res.json();
         if (!data.success) throw new Error(data.message ?? 'Upload failed');
         if (data.saved) {
-          console.log('onDataSaved fired');     // DEBUG
+          console.log('onDataSaved fired');
           onDataSaved?.();
         }
         //update the shipment json
-        await fetch('/api/update/shipment', {
+        await fetch('/api/update/shipment2', {
           method:'POST', 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            file_Id: data.fileId,
-            file_Type: data.fileType,
+            fileId: data.fileId,
+            fileType: data.fileType,
+            fileUrl: data.fileUrl,
             rawJson: data.rawJson,
             mode: data.rawJson.shipment.mode,
             user: 'user', //not implemented yet
@@ -134,7 +135,8 @@ const [isProcessing, setIsProcessing] = useState(false);
         });
 
 
-
+        onDataSaved?.();
+        console.log('onDataSaved fired');
         // Optional confirmation bubble in the chat
         replacePlaceholder(idx, `✅ Uploaded **${file.name}**.`);
       } catch (err) {

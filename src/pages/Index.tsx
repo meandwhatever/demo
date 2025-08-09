@@ -103,9 +103,8 @@ const Index = () => {
   const [selectedShipmentType, setSelectedShipmentType] = useState('');
   const [showShipmentDetails, setShowShipmentDetails] = useState(false);
 
-  const handleViewShipmentDetails = (shipmentId: string, mode: string) => {
+  const handleViewShipmentDetails = (shipmentId: string) => {
     setSelectedShipmentId(shipmentId);
-    setSelectedShipmentType(mode);
     setShowShipmentDetails(true);
     setShowClassificationDetails(false);
     setShowClassificationDetailsPage(false);
@@ -163,7 +162,7 @@ const Index = () => {
           <div className="w-full">
             <ShipmentDetails 
             shipmentId={selectedShipmentId}
-            mode={selectedShipmentType}
+            //mode={selectedShipmentType}
             onClose={() => setShowShipmentDetails(false)}
             chatHistory={chatHistory}
             setChatHistory={setChatHistory}
@@ -177,6 +176,9 @@ const Index = () => {
               <AlertsAndActions 
                 onShowDetails={handleShowClassificationDetails}
                 onShowReviewList={handleShowReviewList}
+                onViewShipmentDetails={handleViewShipmentDetails}
+                dbBump={dbBump}
+                onDataSaved={() => setDbBump(prev => prev + 1)}
               />
               <RecentClassifications onViewDetails={handleViewClassificationDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />
               <RecentDocuments onViewDocumentDetails={handleViewDocumentDetails} dbBump={dbBump} onDataSaved={() => setDbBump(prev => prev + 1)} />

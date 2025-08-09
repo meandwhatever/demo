@@ -33,8 +33,8 @@ model hbl_Document {
 }
 
 model Shipment {
-  /// Internal UUID primary key
-  id             String   @id @default(utoincrement())
+  /// Internal key
+  id             Int   @id @default(autoincrement())
   /// Your “ocn-xxxxxx” business identifier
   shipmentId     String   @unique
   /// FCL, LCL, AIR, etc.
@@ -73,4 +73,27 @@ model Classification {
   broader_description  String?
 
   need_Review Boolean  @default(true)
+}
+
+model actions {
+  /// Primary key
+  db_id                   Int   @id @default(autoincrement())
+
+  /// Record creation time
+  createdAt            DateTime @default(now())
+
+  /// what type of action
+  /// type 1: Classification
+  /// type 2: shipment
+  type Int  
+
+  /// id from the db type
+  id String
+
+  /// not worry now
+  user String?
+
+  updated_reason String?
+
+
 }

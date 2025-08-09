@@ -10,7 +10,6 @@ import React, { useEffect, useState } from 'react';
 interface RecentShipmentsProps {
     onViewShipmentDetails?: (
       shipmentId: string,
-      mode: string,
     ) => void;
     dbBump: number;
     onDataSaved: () => void;
@@ -41,9 +40,9 @@ const RecentDocuments = ({ onViewShipmentDetails, dbBump, onDataSaved }: RecentS
     navigate('/shipment-list'); //not implemented yet
   };
 
-  const handleViewShipment = (shipmentId: string, mode: string) => {
+  const handleViewShipment = (shipmentId: string) => {
     if (onViewShipmentDetails) {
-      onViewShipmentDetails(shipmentId, mode);
+      onViewShipmentDetails(shipmentId);
     }
   };
 
@@ -94,7 +93,7 @@ const RecentDocuments = ({ onViewShipmentDetails, dbBump, onDataSaved }: RecentS
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => handleViewShipment(item.shipmentId.toString(), item.mode)}
+                    onClick={() => handleViewShipment(item.shipmentId.toString())}
                     className="flex items-center space-x-1"
                   >
                     <Eye className="w-4 h-4" />

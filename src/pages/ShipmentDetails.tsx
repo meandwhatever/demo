@@ -8,13 +8,22 @@ import PDFViewer from '@/components/PDFViewer';
 import ShipmentDetailsPanel from '@/components/ShipmentDetailsPanel';
 import AIChatInterface from '@/components/AIChatInterface';
 import { useNavigate } from 'react-router-dom';
+import { ChatItem } from '@/pages/Index';
 
-const ShipmentDetails = () => {
+
+type ShipmentDetailsProps = {
+  shipmentId: string;
+  onClose: () => void;
+  chatHistory: ChatItem[];
+  setChatHistory: React.Dispatch<React.SetStateAction<ChatItem[]>>;
+};
+
+const ShipmentDetails = ({ shipmentId, onClose, chatHistory, setChatHistory }: ShipmentDetailsProps) => {
   const [chatMessage, setChatMessage] = useState('');
   const [activeDocument, setActiveDocument] = useState('MBL');
   const [isAIVisible, setIsAIVisible] = useState(false);
   const navigate = useNavigate();
-
+/*
   const documents = [
     { id: 'MBL', name: 'MBL_12345.pdf', type: 'MBL' },
     { id: 'HBL', name: 'HBL_54321.pdf', type: 'HBL' },
@@ -31,8 +40,10 @@ const ShipmentDetails = () => {
     };
     return baseMetadata;
   };
+*/
 
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Navigation */}
       <nav className="bg-white border-b border-slate-200 px-6 py-3 shadow-sm">
@@ -156,6 +167,7 @@ const ShipmentDetails = () => {
         </div>
       </div>
     </div>
+
   );
 };
 
