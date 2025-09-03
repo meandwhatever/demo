@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log("passed mbl_json and hbl_json to combineMBLAndHBLToShipment")
     const updated = await prisma.shipment.update({
       where: { shipmentId },
-      data: { rawJson: shipment_json },
+      data: { rawJson: shipment_json, is_validated: true },
       select: { shipmentId: true, updated_at: true },
     });
 

@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid';
+import { combineMBLAndHBLToShipment } from '../create/new_build_json';
 /*
 model Shipment {
   /// Internal key
@@ -86,6 +87,7 @@ export default async function handler(
 
         updateReason = 'update mbl url'
       } else {
+
         shipment = await prisma.shipment.create({
           data: {
             shipmentId: uuidv4(),
@@ -94,7 +96,16 @@ export default async function handler(
             mode
           }
         })
+
         updateReason = 'create shipment from mbl'
+        const shipmentJson = combineMBLAndHBLToShipment(rawJson, null, shipment.shipmentId)
+        await prisma.shipment.update({
+          where: { id: shipment.id },
+          data: {
+            rawJson: shipmentJson
+          }
+        })
+
       }
     }
 
@@ -116,6 +127,9 @@ export default async function handler(
       })
 
       if (existing) {
+        //if mbl number exists this either means:
+        //1. same hbl file is uploaded again, while mbl file is not uploaded
+        //2. exist mbl file but no hbl file
         shipment = await prisma.shipment.update({
           where: { id: existing.id },
           data: {
@@ -135,6 +149,13 @@ export default async function handler(
           }
         })
         updateReason = 'create shipment from hbl'
+        const shipmentJson = combineMBLAndHBLToShipment(null, rawJson, shipment.shipmentId)
+        await prisma.shipment.update({
+          where: { id: shipment.id },
+          data: {
+            rawJson: shipmentJson
+          }
+        })
       }
     }
 

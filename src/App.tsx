@@ -16,7 +16,13 @@ import ShipmentList from "./pages/ShipmentList";
 import ApprovalSubmit from "./pages/ApprovalSubmit";
 import ApprovalSubmitList from "./pages/ApprovalSubmitList";
 import NotFound from "./pages/NotFound";
+import DeleteData from "./pages/DeleteData";
+import Task from "./pages/newcss/taskpage";
+import Landing from "./pages/newcss/landing";
+import ActionRail from "./pages/newcss/components/actionrails";
 
+
+  
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -37,6 +43,11 @@ const App = () => (
           <Route path="/shipment-list" element={<ShipmentList />} />
           <Route path="/approval-submit" element={<ApprovalSubmit />} />
           <Route path="/approval-submit-list" element={<ApprovalSubmitList />} />
+          <Route path="/delete_data" element={<DeleteData />} />
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/task" element={<Task />} />
+          <Route path="/actionrail" element={<ActionRail />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

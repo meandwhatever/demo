@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { ChatItem } from '@/pages/Index';
 import ValidationFields from '@/components/ValidationFields';
+import ValidationFieldsdemo from '@/components/ValidationFieldsdemo';
 
 
 /* shipment json has the following structure:
@@ -112,6 +113,7 @@ export interface Shipment {
   rawJson: any | null;
   mblRawJson: any | null;
   hblRawJson: any | null;
+  is_validated: boolean | null;
 }
 
 const ShipmentDetails = ({ shipmentId,  onClose, chatHistory, setChatHistory }: ShipmentDetailsProps) => {
@@ -121,19 +123,33 @@ const ShipmentDetails = ({ shipmentId,  onClose, chatHistory, setChatHistory }: 
   const navigate = useNavigate();
 
 
+// helpers (keep as you already have)
+const formatDateYMD = (dt?: string | Date | null) => {
+  if (!dt) return 'not found';
+  const d = typeof dt === 'string' ? new Date(dt) : dt;
+  return isNaN(d.getTime()) ? 'not found' : d.toISOString().slice(0, 10);
+};
 
+const safeId = (v?: string | null) => (v && v.trim() !== '' ? v : 'not found');
 
-  const getDocumentMetadata = (type: string) => {
-    const baseMetadata = {
-      date: '2024-03-15',
-      fromEmail: 'supplier@abcmanufacturing.com',
-      emailSubject: type === 'MBL' ? 'Master Bill of Lading - Shipment #MBL-12345' : 
-                   type === 'HBL' ? 'House Bill of Lading - Shipment #HBL-54321' :
-                   'Commercial Invoice - Order #INV001234'
-    };
-    return baseMetadata;
-  };
+// one-arg version; uses shipmentData in scope and accepts any string
+const getDocumentMetadata = (type: string) => {
+  const s = shipmentData; // from your component/props
+  const t = (type || '').toUpperCase();
+  const isMBL = t === 'MBL';
+  const isHBL = t === 'HBL';
 
+  const date = formatDateYMD(s?.created_at);
+  const id = isMBL ? s?.mbl_Number : isHBL ? s?.hbl_Number : null;
+
+  const emailSubject = isMBL
+    ? `Master Bill of Lading - Shipment #${safeId(id)}`
+    : isHBL
+    ? `House Bill of Lading - Shipment #${safeId(id)}`
+    : 'unknown type';
+
+  return { date, fromEmail: 'supplier@abcmanufacturing.com', emailSubject };
+};
   const [shipmentData, setShipmentData] = useState<Shipment | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -161,10 +177,12 @@ const ShipmentDetails = ({ shipmentId,  onClose, chatHistory, setChatHistory }: 
   }, [fetchShipment]);
 
   const documents = [
-    { id: 'MBL', name: 'MBL_12345.pdf', type: 'MBL', url: shipmentData?.mbl_url },
-    { id: 'HBL', name: 'HBL_54321.pdf', type: 'HBL', url: shipmentData?.hbl_url },
-    { id: 'CI', name: 'Commercial_Invoice_001.pdf', type: 'Commercial Invoice', url: null}//not implemented yet
+    { id: 'MBL', name: `${shipmentData?.mbl_Number}`, type: 'MBL', url: shipmentData?.mbl_url },
+    { id: 'HBL', name: `${shipmentData?.hbl_Number}`, type: 'HBL', url: shipmentData?.hbl_url },
   ];
+
+
+  
 
 
   return (
@@ -192,7 +210,7 @@ const ShipmentDetails = ({ shipmentId,  onClose, chatHistory, setChatHistory }: 
         {/* Left Panel - PDF Viewer with Tabs */}
         <div className="w-1/2 border-r border-slate-200 bg-white flex flex-col">
           <Tabs value={activeDocument} onValueChange={setActiveDocument} className="h-full flex flex-col">
-            <TabsList className="grid w-full grid-cols-3 m-4 mb-0">
+            <TabsList className="grid w-full grid-cols-2 m-4 mb-0">
               {documents.map((doc) => (
                 <TabsTrigger key={doc.id} value={doc.id} className="flex items-center space-x-2">
                   <span>{doc.type}</span>
@@ -216,16 +234,39 @@ const ShipmentDetails = ({ shipmentId,  onClose, chatHistory, setChatHistory }: 
         {/* Right Panel - Shipment Details and AI Chat */}
         <div className="w-1/2 bg-white flex flex-col">
         <div className={`${isAIVisible ? 'flex-[3]' : 'flex-1'} border-b border-slate-200 overflow-hidden`}>
-            {loading || !shipmentData ? (
-              <div className="p-6 text-sm text-slate-600">Loading…</div>
-            ) : shipmentData.rawJson ? (
-              <ShipmentDetailsPanel shipment={shipmentData} />
-            ) : (
-              <ValidationFields
+        {loading || !shipmentData ? (
+          <div className="p-6 text-sm text-slate-600">Loading…</div>
+        ) : (() => {
+          const hasMBL = shipmentData.mblRawJson != null;
+          const hasHBL = shipmentData.hblRawJson != null;
+
+          // Handle both spellings, default to false
+          const isValidated =
+            Boolean(
+              (shipmentData as any).is_validated ??
+              (shipmentData as any).is_vaildated ??
+              false
+            );
+
+          // Stage 1: only one doc uploaded -> show details (auto-built partial rawJson is fine)
+          if (!hasMBL || !hasHBL) {
+            return <ShipmentDetailsPanel shipment={shipmentData} />;
+          }
+
+          // Stage 2: both docs uploaded
+          // - If not validated -> show ValidationFieldsdemo (user reviews/merges/updates)
+          // - If validated -> show final details
+          if (!isValidated) {
+            return (
+              <ValidationFieldsdemo
                 shipmentData={shipmentData}
-                onBuilt={fetchShipment}  // when child finishes building, refresh to show details panel
+                onBuilt={fetchShipment} // refresh after user confirms/updates
               />
-            )}
+            );
+          }
+
+          return <ShipmentDetailsPanel shipment={shipmentData} />;
+        })()}
           </div>
           
           {/* AI Assistant Toggle Button - Dashboard style */}

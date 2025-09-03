@@ -1,0 +1,51 @@
+{
+  "shipper": {
+    "name": "DEMO SHIPPER",
+    "address": "ROOM 123, ABC BUILDING, 456 DDD ROAD, SHENZHEN, CHINA ZIP CODE#518000"
+  },
+  "consignee": {
+    "name": "DEMO CONSIGNEE",
+    "address": "1 XYZ DR., SUITE 001, UVW, CA, 23456"
+  },
+  "notify_party": {
+    "name": "DEMO CONSIGNEE",
+    "address": "1 XYZ DR., SUITE 001, UVW, CA, 23456"
+  },
+  "shipment": {
+    "mbl_number": "CMDUSGN016U16",
+    "carrier_scac_code": "",
+    "carrier_booking_number": "",
+    "vessel_name": "A.HIJKLMN",
+    "voyage_number": "0ABI2C1MA",
+    "port_of_loading": "YANTIAN, CHINA",
+    "port_of_discharge": "LONG BEACH, CA",
+    "place_of_receipt": "YANTIAN, CHINA",
+    "place_of_delivery": "CHICAGO, IL",
+    "place_of_release": "",
+    "date_of_release": null,
+    "shipped_on_board_date": null,
+    "mode": "FCL",
+    "freight_term": "",
+    "freight_service": "",
+    "total_number_of_containers": 1,
+    "total_weight": "8660.000 KGS",
+    "total_volume": "60.410 CBM",
+    "total_package": "308 PACKAGES"
+  },
+  "freight_charges": [],
+  "containers": [
+    {
+      "container_number": "ABCU7776616",
+      "seal_number": "R111116",
+      "container_type": "40HC",
+      "number_of_packages": 308,
+      "package_uom": "PACKAGES",
+      "weight": 8660.0,
+      "weight_uom": "KGS",
+      "volume": 60.41,
+      "volume_uom": "CBM",
+      "product_item_description": "STONE COUNTERTOPS HS CODE:07139010 CERAMIC SINK HS CODE:10061010 THIS SHIPMENT CONTAINS NO SOLID WOOD PACKING MATERIALS.",
+      "product_item_hscode": "07139010,10061010"
+    }
+  ]
+}

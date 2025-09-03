@@ -1,0 +1,59 @@
+{
+  "shipper": {
+    "name": "DEMO HBL_SHIPPER",
+    "address": "ROOM 987, XYZ BUILDING, 654 UVW ROAD, SHENZHEN, CHINA, ZIP CODE#518111, T:86-111-12345678, F:86-111-87654321"
+  },
+  "consignee": {
+    "name": "DEMO HBL_CONSIGNEE",
+    "address": "100 LMN DR., SUITE 111, UNION, CA, 23456, T:1-789-10101111"
+  },
+  "notify_party": {
+    "name": "SAME AS CONSIGNEE",
+    "address": "100 LMN DR., SUITE 111, UNION, CA, 23456, T:1-789-10101111"
+  },
+  "shipment": {
+    "hbl_number": "DEMU51102316",
+    "mbl_number": "CMDUSGN016U16",
+    "vessel_name": "A.HIJKLMN",
+    "voyage_number": "",
+    "port_of_loading": "YANTIAN, CHINA",
+    "port_of_discharge": "LONG BEACH, CA",
+    "place_of_receipt": "YANTIAN, CHINA",
+    "place_of_delivery": "CHICAGO, IL",
+    "place_of_issue": "",
+    "date_of_issue": "2024-07-19",
+    "shipped_on_board_date": "2024-07-20",
+    "mode": "FCL",
+    "freight_term": "Prepaid",
+    "freight_service": "",
+    "total_number_of_containers": 1,
+    "total_weight": "8660 kg",
+    "total_volume": "60.410 cbm",
+    "total_package": "309"
+  },
+  "freight_charges": [
+    {
+      "charge_name": "Freight",
+      "rate": null,
+      "quantity": null,
+      "unit(Currency)": "",
+      "amount": null,
+      "prepaid or collect": "prepaid"
+    }
+  ],
+  "containers": [
+    {
+      "container_number": "ABCU7776616",
+      "seal_number": "R111116",
+      "container_type": "40HC",
+      "number_of_packages": 309,
+      "package_uom": "PACKAGES",
+      "weight": 8660,
+      "weight_uom": "kg",
+      "volume": 60.41,
+      "volume_uom": "cbm",
+      "product_item_description": "STONE COUNTERTOPS; HS CODE:07139010; CERAMIC SINK; HS CODE:10061010; THIS SHIPMENT CONTAINS NO SOLID WOOD PACKING MATERIALS",
+      "product_item_hscode": "07139010,10061010"
+    }
+  ]
+}

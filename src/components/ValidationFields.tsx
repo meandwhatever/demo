@@ -3,6 +3,147 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Shipment } from '@/components/ShipmentDetails';
 
+/*
+hbl json structure:
+{
+  "shipper": {
+    "name":              "",  // String
+    "address":           "",  // String
+
+  },
+  "consignee": {
+    "name":            "",  // String
+    "address":         "",  // String
+
+  },
+  "notify_party": {
+    "name":         "",  // String
+    "address":      "",  // String
+
+  },
+  "shipment": {
+    "hbl_number": "",  // String
+    "mbl_number": "",  // String
+    "vessel_name":                  "",  // String
+    "voyage_number":                "",  // String
+    "port_of_loading":              "",  // String
+    "port_of_discharge":            "",  // String
+    "place_of_receipt":             "",  // String
+    "place_of_delivery":            "",  // String
+    "place_of_issue":             "",  // String
+    "date_of_issue":              null,  // String (ISO Date)
+    "shipped_on_board_date":        null   // String (ISO Date)
+    "mode":            "",  // String (e.g. "FCL", "LCL", "AIR")
+    "freight_term":    "",  // String (e.g. "Prepaid", "Collect")
+    "freight_service": ""   // String (e.g. "Door‑to‑Door")
+    "total_number_of_containers": null,  // Number (integer)
+    "total_weight":               null,  // String (e.g. "10000 kg")
+    "total_volume":               null,  // String (e.g. "10000 m3")
+    "total_package":              null   // String (e.g. "10000 pcs")
+  },
+
+
+  "freight_charges": [
+    {
+      "charge_name": "",  // String
+      "rate":        null,  // Number
+      "quantity":    null,  // Number (integer)
+      "unit(Currency)": "",  //String
+      "amount":      null,  // Number
+      "prepaid or collect":   "",  // String(write "prepaid" or "collect", or "" if not found)
+
+    }
+    // … repeat for each line item
+  ],
+  "containers": [
+    {
+      "container_number":            "",  // String
+      "seal_number":                 "",  // String
+      "container_type":              "",  // String
+      "number_of_packages":          null,  // Number (integer)
+      "package_uom":                 "",  // String
+      "weight":                      null,  // Number
+      "weight_uom":                  "",  // String
+      "volume":                      null,  // Number
+      "volume_uom":                  "",  // String
+      "product_item_description":    "",  // String
+      "product_item_hscode":         ""   // String
+    }
+    // … repeat for each container
+  ]
+}
+
+mbl json structure:
+{
+  "shipper": {
+    "name":              "",  // String
+    "address":           "",  // String
+
+  },
+  "consignee": {
+    "name":            "",  // String
+    "address":         "",  // String
+
+  },
+  "notify_party": {
+    "name":         "",  // String
+    "address":      "",  // String
+
+  },
+  "shipment": {
+    "mbl_number": "",  // String
+    "carrier_scac_code":            "",  // String
+    "carrier_booking_number":       "",  // String
+    "vessel_name":                  "",  // String
+    "voyage_number":                "",  // String
+    "port_of_loading":              "",  // String
+    "port_of_discharge":            "",  // String
+    "place_of_receipt":             "",  // String
+    "place_of_delivery":            "",  // String
+    "place_of_release":             "",  // String
+    "date_of_release":              null,  // String (ISO Date)
+    "shipped_on_board_date":        null   // String (ISO Date)
+    "mode":            "",  // String (e.g. "FCL", "LCL")
+    "freight_term":    "",  // String (e.g. "Prepaid", "Collect")
+    "freight_service": ""   // String (e.g. "Door‑to‑Door")
+    "total_number_of_containers": null,  // Number (integer)
+    "total_weight":               null,  // String (e.g. "10000 kg")
+    "total_volume":               null,  // String (e.g. "10000 m3")
+    "total_package":              null   // String (e.g. "10000 pcs")
+  },
+
+
+  "freight_charges": [
+    {
+      "charge_name": "",  // String
+      "rate":        null,  // Number
+      "quantity":    null,  // Number (integer)
+      "unit(Currency)": "",  //String
+      "amount":      null,  // Number
+      "prepaid or collect":   "",  // String(write "prepaid" or "collect", or "" if not found)
+
+    }
+    // … repeat for each line item
+  ],
+  "containers": [
+    {
+      "container_number":            "",  // String
+      "seal_number":                 "",  // String
+      "container_type":              "",  // String
+      "number_of_packages":          null,  // Number (integer)
+      "package_uom":                 "",  // String
+      "weight":                      null,  // Number
+      "weight_uom":                  "",  // String
+      "volume":                      null,  // Number
+      "volume_uom":                  "",  // String
+      "product_item_description":    "",  // String
+      "product_item_hscode":         ""   // String
+    }
+    // … repeat for each container
+  ]
+}
+*/
+
 type Json = any;
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (

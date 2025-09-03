@@ -53,8 +53,8 @@ model Shipment {
   /// All freight-charge line items
   freightCharges Json[]
   /// holds involved_party,shipment,containers,freight_charges,customs,shipping_documents,validation_result
-  /// dont worry for now
   rawJson        Json?
+  is_validated Boolean @default(false)
 }
 
 model Classification {
