@@ -12,7 +12,7 @@ export default function Landing() {
 
   // mirror the switch's current view so we can size the left column
   const [rightView, setRightView] = useState<RightView>("rail");
-  const leftSpan = rightView === "chat" ? "lg:col-span-7" : "lg:col-span-9"; // complements 5/3
+  const leftSpan = rightView === "chat" ? "lg:col-span-7" : "lg:col-span-11"
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -25,12 +25,12 @@ export default function Landing() {
         <TopNav/>
 
         {/* Main content */}
-        <main className="flex-1 bg-gray-100 p-5 ">
-          <div className="mx-auto h-full w-full max-w-7xl rounded-2xl border-2 bg-white p-4 shadow-lg shadow-gray-300">
+         <main className="flex-1 min-h-0 overflow-hidden bg-gray-100 p-3">
+        <div className="mx-auto h-full w-full max-w-7xl rounded-2xl border-2 shadow-lg shadow-gray-300 flex flex-col min-h-0 overflow-hidden">
             {/* Page content */}
             <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-12">
               {/* Left: Task list or Task details */}
-              <section className={`min-h-0 ${leftSpan}`}>
+              <section className={`min-h-0 overflow-y-auto ${leftSpan}`}>
                 {selectedTask ? (
                   <TaskDetails
                     task={selectedTask}

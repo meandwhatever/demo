@@ -1,11 +1,17 @@
+// components/Aichat.tsx
 import React, { useState } from "react";
-import { PaperclipIcon, ArrowUpIcon, ClockIcon, PencilIcon, X } from "lucide-react";
+import { PaperclipIcon, ArrowUpIcon, ClockIcon, PencilIcon, X, Minimize2 } from "lucide-react";
 
 export type ChatItem = {
   message: string;
   time: string;
   from: "user" | "ai";
   isPlaceholder?: boolean;
+};
+
+type Props = {
+  className?: string;
+  onCollapse?: () => void; // <-- new: collapse chat (show ActionRail)
 };
 
 const formatTimestamp = (iso: string) =>
@@ -18,7 +24,7 @@ const formatTimestamp = (iso: string) =>
     timeZoneName: "short",
   });
 
-export default function AiChatCard() {
+export default function AiChatCard({ className, onCollapse }: Props) {
   const [chatMessage, setChatMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatItem[]>([]);
@@ -46,7 +52,7 @@ export default function AiChatCard() {
     // 2) Prepare payload without placeholder
     const historyForServer = [...chatHistory, userMsg];
 
-    // 3) Request (don’t await yet)
+    // 3) Request
     const responsePromise = fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -77,9 +83,13 @@ export default function AiChatCard() {
   };
 
   return (
-    
-    <div className="mx-auto w-full max-w-7xl h-full min-h-[28rem] rounded-2xl border-2 bg-white p-4 shadow-lg shadow-gray-300 flex flex-col">      
-    {/* Card header */}
+    <div
+      className={
+        className ??
+        "mx-auto w-full max-w-7xl h-full min-h-[28rem] rounded-2xl border-2 bg-white p-4 shadow-lg shadow-gray-300 flex flex-col"
+      }
+    >
+      {/* Card header */}
       <div className="flex items-center justify-between mb-4 shrink-0">
         <div className="flex items-center gap-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600 text-white">
@@ -97,6 +107,15 @@ export default function AiChatCard() {
           </button>
           <button className="rounded-lg p-2 hover:bg-gray-100" title="Compose">
             <PencilIcon className="h-4 w-4" />
+          </button>
+          {/* NEW: Collapse button to hide chat / show ActionRail */}
+          <button
+            onClick={onCollapse}
+            className="rounded-lg p-2 hover:bg-gray-100"
+            title="Collapse chat"
+            aria-label="Collapse chat"
+          >
+            <Minimize2 className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -179,7 +198,7 @@ export default function AiChatCard() {
       </div>
 
       {/* Chat box */}
-      <div className="rounded-xl p-2 bg-blue-500 mt-4 shrink-0">
+      <div className="rounded-xl p-2 mt-4 shrink-0">
         {/* Quick suggestions (hide after first message) */}
         {showQuick && (
           <>
@@ -187,7 +206,7 @@ export default function AiChatCard() {
               <span className="text-xs">Quick suggestions:</span>
             </div>
 
-            <div className="mb-2 flex flex-wrap items-center justify-t gap-3">
+            <div className="mb-2 flex flex-wrap items-center gap-3">
               {[
                 "Show me products in transition",
                 "What are the tasks I need to complete today",
@@ -206,10 +225,10 @@ export default function AiChatCard() {
         )}
 
         {/* Text box + actions */}
-        <div className="rounded-xl border p-1.5 bg-red-500 h-30 shadow-md">
+        <div className="rounded-xl border p-1.5 shadow-md">
           <div className="bg-white rounded-md px-1.5 pt-1.5 pb-0 h-full">
             <textarea
-              className="h-16 w-full resize-none overflow-y-auto rounded-t-md rounded-b-none  p-3 text-md outline-none placeholder-gray-400 leading-relaxed"
+              className="h-16 w-full resize-none overflow-y-auto rounded-t-md rounded-b-none p-3 text-md outline-none placeholder-gray-400 leading-relaxed"
               placeholder="Type your message here..."
               wrap="soft"
               spellCheck={false}
@@ -222,26 +241,24 @@ export default function AiChatCard() {
                 }
               }}
             />
-                      <div className="bg-white rounded-lg rounded-t-none -mt-px flex items-center justify-between px-2 py-1.5">
-            <button
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
-              title="Attach file"
-            >
-              <PaperclipIcon className="h-5 w-5" />
-            </button>
+            <div className="bg-white rounded-lg rounded-t-none -mt-px flex items-center justify-between px-2 py-1.5">
+              <button
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
+                title="Attach file"
+              >
+                <PaperclipIcon className="h-5 w-5" />
+              </button>
 
-            <button
-              onClick={handleSend}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
-              title="Send"
-              disabled={isProcessing}
-            >
-              <ArrowUpIcon className="h-5 w-5" />
-            </button>
+              <button
+                onClick={handleSend}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                title="Send"
+                disabled={isProcessing}
+              >
+                <ArrowUpIcon className="h-5 w-5" />
+              </button>
+            </div>
           </div>
-          </div>
-
-
         </div>
       </div>
     </div>

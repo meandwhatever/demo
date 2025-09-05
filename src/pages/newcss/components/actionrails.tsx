@@ -8,11 +8,11 @@ type Props = {
   onClock?: () => void;
   onEdit?: () => void;
   onUpload?: () => void;
-  onExpand?: () => void;
+  onExpand?: () => void;              // <-- Maximize2 will call this
 };
 
 export default function ActionRail({
-  className = "fixed right-6 top-28 md:top-24 z-40", // floats on the right
+  className = "fixed right-4 top-28", // floats on the right
   onPrimaryClick,
   onClock,
   onEdit,
@@ -20,7 +20,7 @@ export default function ActionRail({
   onExpand,
 }: Props) {
   return (
-    <div className="fixed top-28 right-6 self-start bg-blue-500">
+    <div className={className}>
       <div className="relative flex flex-col items-center rounded-full border bg-gray-100 p-3 shadow-xl">
         {/* BIG primary circle that slightly overlaps the top */}
         <button
@@ -33,7 +33,7 @@ export default function ActionRail({
         </button>
 
         {/* Rail body */}
-        <div className="flex flex-col items-center gap-6 pt-14 pb-2 bg-green-500">
+        <div className="flex flex-col items-center gap-6 pt-14 pb-2">
           <button
             onClick={onClock}
             className="p-2 text-gray-900 hover:opacity-80"
@@ -59,18 +59,16 @@ export default function ActionRail({
             <Upload className="h-6 w-6" />
           </button>
 
+          {/* Expand -> show AI chat, hide rail (handled by parent via onExpand) */}
           <button
-          onClick={onExpand}
-          className="p-2 text-gray-900 hover:opacity-80 border border-gray-200 rounded-full"
-          aria-label="Expand"
-          title="Expand"
-        >
-          <Maximize2 className="h-5 w-5" />
-        </button>
+            onClick={onExpand}
+            className="p-2 text-gray-900 hover:opacity-80 border border-gray-200 rounded-full"
+            aria-label="Expand"
+            title="Expand"
+          >
+            <Maximize2 className="h-5 w-5" />
+          </button>
         </div>
-
-        {/* Small white circle at the bottom with expand arrows */}
-
       </div>
     </div>
   );
