@@ -21,7 +21,7 @@ export default function ActionRailSwitch({ className, onViewChange }: Props) {
   const rightSpan = view === "chat" ? "lg:col-span-5" : "lg:col-span-1";
 
   return (
-    <aside className={`min-h-0 bg-blue-500 ${rightSpan} ${className ?? ""} flex flex-col`}>
+    <aside className={`min-h-0 ${rightSpan} ${className ?? ""} flex flex-col`}>
       {view === "rail" ? (
         <ActionRail
           // sit inside the grid (not fixed to viewport)

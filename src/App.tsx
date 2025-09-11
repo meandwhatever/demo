@@ -20,6 +20,9 @@ import DeleteData from "./pages/DeleteData";
 import Task from "./pages/newcss/taskpage";
 import Landing from "./pages/newcss/landing";
 import ActionRailSwitch from "./pages/newcss/components/actionrailswitch";
+import ProductPage from "./pages/newcss/productpage";
+import Test from "./pages/newcss/components/test";
+import DocumentPage from "./pages/newcss/documentpage";
 
 
   
@@ -47,7 +50,16 @@ const App = () => (
           <Route path="/landing" element={<Landing />} />
           <Route path="/task" element={<Task />} />
           <Route path="/actionrail" element={<ActionRailSwitch />} />
+          <Route path="/product" element={<ProductPage />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/document" element={<DocumentPage />} />
 
+
+
+
+
+
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

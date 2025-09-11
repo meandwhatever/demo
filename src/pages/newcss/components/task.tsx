@@ -20,7 +20,7 @@ type TasksProps = {
   title?: string;
   rows?: TaskRow[];             // if omitted, component shows built-in mock rows
   page?: number;                // controlled page (1-based). If omitted, component manages its own page
-  pageSize?: number;            // default 12
+  pageSize?: number;            // default
   totalPages?: number;          // set when using server-side pagination
   onPageChange?: (nextPage: number) => void;
   onClose?: () => void;
@@ -178,6 +178,7 @@ export default function Tasks({
 
       {/* Pagination */}
       <div className="mt-4 flex items-center justify-center gap-2 text-sm shrink-0">
+        
         <button
           type="button"
           onClick={() => go(currentPage - 1)}

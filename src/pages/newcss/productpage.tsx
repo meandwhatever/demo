@@ -1,18 +1,18 @@
-// taskpage.tsx  (aka Landing)
+// Product landing page mirroring your taskpage layout.
 import React, { useState } from "react";
 import Sidebar from "./components/sidebar";
 import TopNav from "./components/nav";
-import Tasks, { TaskRow } from "./components/task";
-import TaskDetails from "./components/taskdetails";
+import Products, { ProductRow } from "./components/products";
+import ProductDetails from "./components/productdetails";
 import ActionRailSwitch, { RightView } from "./components/actionrailswitch";
 
-export default function Landing() {
+export default function ProductPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedTask, setSelectedTask] = useState<TaskRow | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductRow | null>(null);
 
-  // mirror the switch's current view so we can size the left column
+  // Keep same right-rail <-> chat switch behavior as taskpage
   const [rightView, setRightView] = useState<RightView>("rail");
-  const leftSpan = rightView === "chat" ? "lg:col-span-7" : "lg:col-span-11"
+  const leftSpan = rightView === "chat" ? "lg:col-span-7" : "lg:col-span-11";
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -22,22 +22,21 @@ export default function Landing() {
       {/* Main column */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top nav */}
-        <TopNav/>
+        <TopNav />
 
         {/* Main content */}
-         <main className="flex-1 min-h-0 overflow-hidden bg-gray-100 p-3">
-        <div className="mx-auto h-full w-full max-w-7xl rounded-2xl border-2 shadow-lg shadow-gray-300 flex flex-col min-h-0 overflow-hidden">
-            {/* Page content */}
+        <main className="flex-1 min-h-0 overflow-hidden bg-gray-100 p-3">
+          <div className="mx-auto h-full w-full max-w-7xl flex flex-col min-h-0 overflow-hidden">
             <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-12">
-              {/* Left: Task list or Task details */}
+              {/* Left: Products table or Details */}
               <section className={`min-h-0 overflow-y-auto ${leftSpan}`}>
-                {selectedTask ? (
-                  <TaskDetails
-                    task={selectedTask}
-                    onBack={() => setSelectedTask(null)}
+                {selectedProduct ? (
+                  <ProductDetails
+                    product={selectedProduct}
+                    onBack={() => setSelectedProduct(null)}
                   />
                 ) : (
-                  <Tasks onRowClick={(t: TaskRow) => setSelectedTask(t)} />
+                  <Products onRowClick={(p: ProductRow) => setSelectedProduct(p)} />
                 )}
               </section>
 
