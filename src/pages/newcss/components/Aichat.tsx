@@ -11,7 +11,7 @@ export type ChatItem = {
 
 type Props = {
   className?: string;
-  onCollapse?: () => void; // <-- new: collapse chat (show ActionRail)
+  onCollapse?: () => void;
 };
 
 const formatTimestamp = (iso: string) =>
@@ -37,7 +37,7 @@ export default function AiChatCard({ className, onCollapse }: Props) {
   ];
 
   const showQuick = chatHistory.length === 0;
-
+  
   const handleSend = async () => {
     const trimmed = chatMessage.trim();
     if (!trimmed || isProcessing) return;

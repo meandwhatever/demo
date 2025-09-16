@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import Pagination from "./Pagination";
 
 /** Row shape you can fetch from your API */
 export type DocumentRow = {
@@ -67,9 +68,8 @@ export default function Documents({
   onRowClick,
   className = "",
 }: DocumentsProps) {
-  const controlled = typeof page === "number" && typeof onPageChange === "function";
   const [localPage, setLocalPage] = useState(1);
-  const currentPage = controlled ? (page as number) : localPage;
+  const currentPage =  localPage;
 
   const allRows = rows && rows.length ? rows : mockRows;
   const derivedTotalPages = Math.max(1, Math.ceil(allRows.length / pageSize));
@@ -83,8 +83,7 @@ export default function Documents({
 
   const go = (p: number) => {
     const clamped = Math.min(Math.max(1, p), pages);
-    if (controlled) onPageChange!(clamped);
-    else setLocalPage(clamped);
+    setLocalPage(clamped);
   };
 
   return (
@@ -186,48 +185,13 @@ export default function Documents({
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="mt-4 flex items-center justify-center gap-2 text-sm shrink-0">
-        <button
-          type="button"
-          onClick={() => go(currentPage - 1)}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          disabled={currentPage <= 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Previous
-        </button>
+      <Pagination
+        currentPage={currentPage}
+        pages={pages}
+        onChange={go}
+        windowSize={5}
+      />
 
-        <div className="mx-1 inline-flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => go(1)}
-            className={`h-8 w-8 rounded-md ${currentPage === 1 ? "bg-gray-900 text-white" : "hover:bg-gray-100 text-gray-800"}`}
-          >
-            1
-          </button>
-          {pages >= 2 && (
-            <button
-              type="button"
-              onClick={() => go(2)}
-              className={`h-8 w-8 rounded-md ${currentPage === 2 ? "bg-gray-900 text-white" : "hover:bg-gray-100 text-gray-800"}`}
-            >
-              2
-            </button>
-          )}
-          {pages > 2 && <span className="px-1 text-gray-500">…</span>}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => go(currentPage + 1)}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          disabled={currentPage >= pages}
-        >
-          Next
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
     </section>
   );
 }

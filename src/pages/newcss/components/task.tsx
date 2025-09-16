@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import Pagination from "./Pagination";
+
 
 /** Row shape you can fetch from your API */
 export type TaskRow = {
@@ -29,6 +31,51 @@ type TasksProps = {
 };
 
 const mockRows: TaskRow[] = [
+  { id: 1,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-001", dueDate: "DD-MM-YYYY" },
+  { id: 2,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-002", dueDate: "DD-MM-YYYY" },
+  { id: 3,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-003", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 4,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-004", dueDate: "DD-MM-YYYY", stackCount: 6 },
+  { id: 5,  type: "Missing Information", sku: "HP-851830-BLK-WRD-005", dueDate: "DD-MM-YYYY" },
+  { id: 6,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-006", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 7,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-007", dueDate: "DD-MM-YYYY" },
+  { id: 8,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-008", dueDate: "DD-MM-YYYY" },
+  { id: 9,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-009", dueDate: "DD-MM-YYYY", stackCount: 8 },
+  { id: 10, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-010", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 11, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-011", dueDate: "DD-MM-YYYY", stackCount: 4 },
+  { id: 12, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-012", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 13, type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-013", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 14, type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-014", dueDate: "DD-MM-YYYY", stackCount: 4 },
+  { id: 15, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-015", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 1,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-001", dueDate: "DD-MM-YYYY" },
+  { id: 2,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-002", dueDate: "DD-MM-YYYY" },
+  { id: 3,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-003", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 4,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-004", dueDate: "DD-MM-YYYY", stackCount: 6 },
+  { id: 5,  type: "Missing Information", sku: "HP-851830-BLK-WRD-005", dueDate: "DD-MM-YYYY" },
+  { id: 6,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-006", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 7,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-007", dueDate: "DD-MM-YYYY" },
+  { id: 8,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-008", dueDate: "DD-MM-YYYY" },
+  { id: 9,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-009", dueDate: "DD-MM-YYYY", stackCount: 8 },
+  { id: 10, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-010", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 11, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-011", dueDate: "DD-MM-YYYY", stackCount: 4 },
+  { id: 12, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-012", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 13, type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-013", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 14, type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-014", dueDate: "DD-MM-YYYY", stackCount: 4 },
+  { id: 15, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-015", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 1,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-001", dueDate: "DD-MM-YYYY" },
+  { id: 2,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-002", dueDate: "DD-MM-YYYY" },
+  { id: 3,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-003", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 4,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-004", dueDate: "DD-MM-YYYY", stackCount: 6 },
+  { id: 5,  type: "Missing Information", sku: "HP-851830-BLK-WRD-005", dueDate: "DD-MM-YYYY" },
+  { id: 6,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-006", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 7,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-007", dueDate: "DD-MM-YYYY" },
+  { id: 8,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-008", dueDate: "DD-MM-YYYY" },
+  { id: 9,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-009", dueDate: "DD-MM-YYYY", stackCount: 8 },
+  { id: 10, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-010", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 11, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-011", dueDate: "DD-MM-YYYY", stackCount: 4 },
+  { id: 12, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-012", dueDate: "DD-MM-YYYY", stackCount: 7 },
+  { id: 13, type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-013", dueDate: "DD-MM-YYYY", stackCount: 5 },
+  { id: 14, type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-014", dueDate: "DD-MM-YYYY", stackCount: 4 },
+  { id: 15, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-015", dueDate: "DD-MM-YYYY", stackCount: 7 },
   { id: 1,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-001", dueDate: "DD-MM-YYYY" },
   { id: 2,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-002", dueDate: "DD-MM-YYYY" },
   { id: 3,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-003", dueDate: "DD-MM-YYYY", stackCount: 5 },
@@ -75,10 +122,9 @@ export default function Tasks({
   onRowClick,
   className = "",
 }: TasksProps) {
-  const controlled = typeof page === "number" && typeof onPageChange === "function";
   const [localPage, setLocalPage] = useState(1);
 
-  const currentPage = controlled ? (page as number) : localPage;
+  const currentPage =  localPage;
 
   // If caller didn't give totalPages, we'll compute it from provided rows.
   let allRows;
@@ -87,6 +133,7 @@ export default function Tasks({
     } else {
     allRows = mockRows;
     }
+  
   const derivedTotalPages = Math.max(1, Math.ceil(allRows.length / pageSize));
   const pages = totalPages ?? derivedTotalPages;
 
@@ -99,9 +146,9 @@ export default function Tasks({
 
   const go = (p: number) => {
     const clamped = Math.min(Math.max(1, p), pages);
-    if (controlled) onPageChange!(clamped);
-    else setLocalPage(clamped);
+     setLocalPage(clamped);
   };
+
 
   return (
     <section
@@ -176,50 +223,13 @@ export default function Tasks({
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="mt-4 flex items-center justify-center gap-2 text-sm shrink-0">
-        
-        <button
-          type="button"
-          onClick={() => go(currentPage - 1)}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          disabled={currentPage <= 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Previous
-        </button>
+      <Pagination
+        currentPage={currentPage}
+        pages={pages}
+        onChange={go}
+        windowSize={5}
+      />
 
-        {/* Simple numeric strip like the screenshot: 1 2 … */}
-        <div className="mx-1 inline-flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => go(1)}
-            className={`h-8 w-8 rounded-md ${currentPage === 1 ? "bg-gray-900 text-white" : "hover:bg-gray-100 text-gray-800"}`}
-          >
-            1
-          </button>
-          {pages >= 2 && (
-            <button
-              type="button"
-              onClick={() => go(2)}
-              className={`h-8 w-8 rounded-md ${currentPage === 2 ? "bg-gray-900 text-white" : "hover:bg-gray-100 text-gray-800"}`}
-            >
-              2
-            </button>
-          )}
-          {pages > 2 && <span className="px-1 text-gray-500">…</span>}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => go(currentPage + 1)}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          disabled={currentPage >= pages}
-        >
-          Next
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
     </section>
   );
 }
