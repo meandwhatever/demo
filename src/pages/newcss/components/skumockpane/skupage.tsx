@@ -1,6 +1,6 @@
 // components/TaskDetails.tsx
 import React, { useState } from "react";
-import ActionRail from "./actionrails";
+import ActionRail from "../actionrails";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -12,21 +12,19 @@ import {
   FileText,
   X,
 } from "lucide-react";
-import type { TaskRow } from "./task";
-import DocPane from "./taskpane/docpane";
-import Taskpane from "./taskpane/taskpane";
+
+import DocPane from "../taskpane/docpane";
+import SKUPane from "./skupane";
 
 
 
 type Props = {
-  task: TaskRow;
-  onBack: () => void;
-  docUrl?: string; // optional: if you have a real file URL, pass it in
+
+
 };
 
-export default function TaskDetails({ task, onBack, docUrl }: Props) {
+export default function SKUPage({  }: Props) {
 
-  const [liveTask, setLiveTask] = useState(task);
   // Left Uploaded Doc pane visibility
   const [showDocPane, setShowDocPane] = useState(true);
   // Right Digitised Fields pane visibility
@@ -39,17 +37,10 @@ export default function TaskDetails({ task, onBack, docUrl }: Props) {
         <div className="w-full">
           {/* Row 1: Back button + Title */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={onBack}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md border hover:bg-gray-50"
-              aria-label="Back"
-              title="Back"
-            >
-              <ArrowLeft className="h-5 w-5 text-gray-700" />
-            </button>
+
 
             <h1 className="text-xl font-semibold text-gray-900">
-              {task.type || "Missing Information"}
+              { "Missing Information"}
             </h1>
           </div>
 
@@ -62,7 +53,7 @@ export default function TaskDetails({ task, onBack, docUrl }: Props) {
             <p>
               <span className="font-medium">Task Status:</span>{" "}
               <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800">
-                {liveTask.status}
+                Completed
               </span>
             </p>
             <p>
@@ -75,7 +66,7 @@ export default function TaskDetails({ task, onBack, docUrl }: Props) {
             </p>
             <p>
               <span className="font-medium">SKU Number:</span>{" "}
-              <span className="text-gray-900">{task.poNumber}</span>
+              <span className="text-gray-900">{ "1234"}</span>
             </p>
             <p>
               <span className="font-medium">Shipment ID:</span>{" "}
@@ -138,7 +129,7 @@ export default function TaskDetails({ task, onBack, docUrl }: Props) {
         showDocPane ? "lg:col-span-8" : "lg:col-span-12"
       }`}
     >
-      <Taskpane onClose={() => setShowFieldsPane(false)} task={liveTask} onTaskStatusChange={(next) =>setLiveTask((t) => ({ ...t, status: next }))} />
+      <SKUPane />
     </section>
   )}
 </div>

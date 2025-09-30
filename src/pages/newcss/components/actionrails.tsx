@@ -22,15 +22,13 @@ export default function ActionRail({
   return (
     <div className={className}>
       <div className="relative flex flex-col items-center rounded-full border bg-gray-100 p-3 shadow-xl">
-        {/* BIG primary circle that slightly overlaps the top */}
-        <button
-          onClick={onPrimaryClick}
-          className="absolute -top-8 inline-flex h-20 w-20 items-center justify-center rounded-full bg-blue-600 shadow-lg ring-4 ring-white"
-          aria-label="Primary"
-          title="Primary"
-        >
-          <Sparkles className="h-9 w-9 text-white" />
-        </button>
+      <button
+  onClick={onPrimaryClick}
+  aria-label="Primary"
+  title="Primary"
+  className="absolute -top-8 h-20 w-20 rounded-full shadow-lg ring-4 ring-white bg-center bg-cover p-0 bg-red-500"
+  style={{ backgroundImage: "url('/src/lib/logo.png')" }}
+/>
 
         {/* Rail body */}
         <div className="flex flex-col items-center gap-6 pt-14 pb-2">

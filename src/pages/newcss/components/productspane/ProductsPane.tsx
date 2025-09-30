@@ -3,6 +3,7 @@ import type { ProductRow } from "../products";
 import InTransitionPane from "./InTransitionPane";
 import NotFoundPane from "./NotFoundPane";
 import ShippingDelayedPane from "./shippingdelayedpane";
+import POSubmittedPane from "./POSubmittedPane";
 
 /** Expand with more statuses as you build them */
 export type ShippingStatus =
@@ -16,11 +17,11 @@ export type ShippingStatus =
 
 type Props = {
   product: ProductRow;
-  shippingStatus: ShippingStatus;
   onClose: () => void;
 };
 
-export default function ProductsPane({ product, shippingStatus, onClose }: Props) {
+export default function ProductsPane({ product, onClose }: Props) {
+  const shippingStatus=product.shippingStatus;
   switch (shippingStatus) {
     case "In Transition":
       return <InTransitionPane product={product} onClose={onClose} />;
@@ -29,7 +30,7 @@ export default function ProductsPane({ product, shippingStatus, onClose }: Props
     case "In Custom":
       return <InTransitionPane product={product} onClose={onClose} />;
     case "PO Submitted":
-      return <InTransitionPane product={product} onClose={onClose} />;
+      return <POSubmittedPane product={product} onClose={onClose} />;
     case "Received":
       return <InTransitionPane product={product} onClose={onClose} />;
     

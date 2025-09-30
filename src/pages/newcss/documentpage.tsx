@@ -1,10 +1,10 @@
 // Document landing page mirroring your ProductPage layout.
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Sidebar from "./components/sidebar";
 import TopNav from "./components/nav";
 import Documents, { DocumentRow } from "./components/documents";
 import DocumentDetails from "./components/documentdetails";
-import ActionRailSwitch, { RightView } from "./components/actionrailswitch";
+import ActionRailSwitch, { RightView, ActionRailSwitchHandle } from "./components/actionrailswitch";
 
 export default function DocumentPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -13,6 +13,8 @@ export default function DocumentPage() {
   // Same right-rail <-> chat switch behavior
   const [rightView, setRightView] = useState<RightView>("rail");
   const leftSpan = rightView === "chat" ? "lg:col-span-7" : "lg:col-span-11";
+
+  const railRef = useRef<ActionRailSwitchHandle>(null);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -36,12 +38,13 @@ export default function DocumentPage() {
                     onBack={() => setSelectedDoc(null)}
                   />
                 ) : (
-                  <Documents onRowClick={(row: DocumentRow) => setSelectedDoc(row)} />
+                  <Documents onRowClick={(row: DocumentRow) => setSelectedDoc(row)}
+                  onSearchSubmit={(q) => railRef.current?.openChatAndSend(q)} />
                 )}
               </section>
 
               {/* Right: ActionRail <-> AI Chat switch */}
-              <ActionRailSwitch onViewChange={setRightView} />
+              <ActionRailSwitch ref={railRef} onViewChange={setRightView} />
             </div>
           </div>
         </main>

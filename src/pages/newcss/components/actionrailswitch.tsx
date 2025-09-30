@@ -1,7 +1,7 @@
 // components/actionrailswitch.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import ActionRail from "./actionrails";
-import AiChatCard from "./Aichat";
+import AiChatCard, { AiChatHandle } from "./Aichat";
 
 export type RightView = "rail" | "chat";
 
@@ -10,31 +10,60 @@ type Props = {
   onViewChange?: (view: RightView) => void;
 };
 
-export default function ActionRailSwitch({ className, onViewChange }: Props) {
-  const [view, setView] = useState<RightView>("rail"); // default: rail
+export type ActionRailSwitchHandle = {
+  /** Opens the chat (if closed) and sends a message */
+  openChatAndSend: (text: string) => void;
+};
+
+const ActionRailSwitch = forwardRef<ActionRailSwitchHandle, Props>(function ActionRailSwitch(
+  { className, onViewChange }: Props,
+  ref
+) {
+  const [view, setView] = useState<RightView>("rail");
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
+  const chatRef = useRef<AiChatHandle>(null);
+
+  useImperativeHandle(ref, () => ({
+    openChatAndSend: (text: string) => {
+      setPendingMessage(text);
+      setView("chat");
+    },
+  }));
 
   useEffect(() => {
     onViewChange?.(view);
   }, [view, onViewChange]);
 
-  // Right column spans 3 when rail, 5 when chat
+  // Once chat is mounted and there's a pending message, push it in.
+  useEffect(() => {
+    if (view === "chat" && pendingMessage) {
+      // allow first paint of AiChat before we call into the ref
+      const id = requestAnimationFrame(() => {
+        chatRef.current?.sendMessage(pendingMessage);
+        setPendingMessage(null);
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, [view, pendingMessage]);
+
   const rightSpan = view === "chat" ? "lg:col-span-5" : "lg:col-span-1";
 
   return (
     <aside className={`min-h-0 ${rightSpan} ${className ?? ""} flex flex-col`}>
       {view === "rail" ? (
         <ActionRail
-          // sit inside the grid (not fixed to viewport)
           className="relative top-10 -right-2 self-start"
           onExpand={() => setView("chat")}
         />
       ) : (
         <AiChatCard
+          ref={chatRef}
           onCollapse={() => setView("rail")}
-          // IMPORTANT: keep flex column + height bounds so the composer stays fixed
           className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-2xl border bg-white p-4 shadow"
         />
       )}
     </aside>
   );
-}
+});
+
+export default ActionRailSwitch;

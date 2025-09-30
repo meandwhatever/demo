@@ -23,7 +23,8 @@ import ActionRailSwitch from "./pages/newcss/components/actionrailswitch";
 import ProductPage from "./pages/newcss/productpage";
 import Test from "./pages/newcss/components/test";
 import DocumentPage from "./pages/newcss/documentpage";
-
+import SKU from "./pages/newcss/components/skumockpane/sku";
+import Parent from "./pages/newcss/components/test/Parent";
 
   
 const queryClient = new QueryClient();
@@ -53,6 +54,9 @@ const App = () => (
           <Route path="/product" element={<ProductPage />} />
           <Route path="/test" element={<Test />} />
           <Route path="/document" element={<DocumentPage />} />
+          <Route path="/sku" element={<SKU />} />
+          <Route path="/parent" element={<Parent />} />
+
 
 
 

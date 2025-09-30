@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8080,
+    port: 80,
     // Proxy API requests to backend server running on port 3000
     proxy: {
       '/api': {

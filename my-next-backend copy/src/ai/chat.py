@@ -28,6 +28,8 @@ def parse_history(arg: str):
             messages.append({"role": "user", "content": content})
         elif role == "ai":
             messages.append({"role": "assistant", "content": content})
+        elif role == "system":
+            messages.append({"role": "system", "content": content})
         # unknown roles are ignored silently
     return messages
 
@@ -40,7 +42,24 @@ def main():
     messages = parse_history(sys.argv[1])
 
     # Optional system prompt
-    system_prompt = "You are a helpful assistant that can answer questions and help with tasks."
+    system_prompt = """You are a helpful assistant that can answer questions and help with tasks. IMPORTANT: When user ask you about the task table, give that part of the answer in Strict JSON format.
+    
+    the json format example is:
+    {
+        "tasks": [
+            {
+                "id": 1,
+                "name": "Task 1"
+                "poNumber": "1234"
+                "status": "Pending"
+                "stackCount": 10
+                "createdAt": "2021-01-01"
+
+            }
+        ]
+    }
+    
+    """
     if system_prompt:
         messages.insert(0, {"role": "system", "content": system_prompt})
 

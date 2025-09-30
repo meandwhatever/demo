@@ -1,19 +1,11 @@
 import React from "react";
 import type { DocumentRow } from "../documents";
-import DiscrepanciesPane from "./DiscrepanciesPane";
-import MissingInformationPane from "./MissingInformationPane";
-
-/** Keep both singular & plural to be safe with upstream data */
-export type DocumentStatus =
-  | "Missing Information"
-  | "Completed"
-  | "Discrepancy"
-  | "Discrepancies"
-  | (string & {});
+import POPane from "./POPane";
+import CLPane from "./CLPane";
+import PLPane from "./PLPane";
 
 type Props = {
   document: DocumentRow;
-  status: DocumentStatus;
   onClose: () => void;
 };
 
@@ -37,17 +29,15 @@ function NotFoundPane({ status, onClose }: { status?: string; onClose: () => voi
   );
 }
 
-export default function DocumentsPane({ document, status, onClose }: Props) {
-  switch (status) {
-    case "Discrepancies":
-        return <DiscrepanciesPane document={document} onClose={onClose} />;
-    case "Discrepancy":
-      return <DiscrepanciesPane document={document} onClose={onClose} />;
-    case "Missing Information":
-      return <MissingInformationPane document={document} onClose={onClose} />;
-
-    // (Add your other cases later, e.g. Missing Information, Completed, etc.)
-
+export default function DocumentsPane({ document, onClose }: Props) {
+  switch (document.docType) {
+    case "PO":
+        return <POPane document={document} onClose={onClose} />;
+    case "Invoice":
+      return <CLPane document={document} onClose={onClose} />;
+    case "Shipping Label":
+      return <PLPane document={document} onClose={onClose} />;
+    
     default:
       return <NotFoundPane status={status} onClose={onClose} />;
   }

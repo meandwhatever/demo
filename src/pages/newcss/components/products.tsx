@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import Pagination from "./Pagination";
 
 /** Row shape you can fetch from your API */
@@ -32,6 +32,7 @@ type ProductsProps = {
   onClose?: () => void;
   onRowClick?: (row: ProductRow) => void;
   className?: string;
+  onSearchSubmit?: (query: string) => void;
 };
 
 const mockRows: ProductRow[] = [
@@ -97,7 +98,20 @@ export default function Products({
   onClose,
   onRowClick,
   className = "",
+  onSearchSubmit,
 }: ProductsProps) {
+  const [query, setQuery] = useState("");
+  const submitSearch = () => {
+    const q = query.trim();
+    if (!q) return;
+    onSearchSubmit?.(q);
+    setQuery("");
+  };
+
+
+
+
+  // pagination
   const [localPage, setLocalPage] = useState(1);
 
   const currentPage =  localPage;
@@ -135,6 +149,28 @@ export default function Products({
           <X className="h-5 w-5" />
         </button>
       </div>
+
+
+      {/* 🔎 Search with AI */}
+      <form
+        onSubmit={(e) => { e.preventDefault(); submitSearch(); }}
+        role="search"
+        aria-label="Search with AI"
+        className="mb-4 shrink-0"
+      >
+          <div className="relative">
+             <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+             <Search className="h-4 w-4 text-gray-400" />
+            </span>
+            <input
+            type="text"
+              value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search products with AI"
+            className="w-full rounded-xl border border-gray-200 pl-10 pr-3 py-2 text-sm placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-200"
+          />
+        </div>
+      </form>
 
       {/* Table */}
       <div className="flex-1 overflow-hidden rounded-xl border border-gray-200 h-full min-h-0">

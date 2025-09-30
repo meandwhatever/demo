@@ -90,7 +90,7 @@ export default function ProductDetails({ product, onBack, docUrl }: Props) {
         {/* Left: Related Documents (reusing DocPane UI) */}
         {showDocPane && (
           <aside className={`min-h-0 ${showRightPane ? "lg:col-span-4" : "lg:col-span-12"}`}>
-            <DocPane docUrl={docUrl} onClose={() => setShowDocPane(false)} />
+            <DocPane  onClose={() => setShowDocPane(false)} />
           </aside>
         )}
 
@@ -98,7 +98,6 @@ export default function ProductDetails({ product, onBack, docUrl }: Props) {
         {showRightPane && (
           <section className={`min-h-0 ${showDocPane ? "lg:col-span-8" : "lg:col-span-12"}`}>
             <ProductsPane
-              shippingStatus={product.shippingStatus}
               product={product}
               onClose={() => setShowRightPane(false)}
             />

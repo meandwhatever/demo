@@ -90,7 +90,7 @@ export default function DocumentsDetails({ document, onBack, docUrl }: Props) {
         {/* Left: Doc viewer */}
         {showLeft && (
           <aside className={`min-h-0 ${showRight ? "lg:col-span-4" : "lg:col-span-12"}`}>
-            <DocPane docUrl={docUrl} onClose={() => setShowLeft(false)} />
+            <DocPane  onClose={() => setShowLeft(false)} />
           </aside>
         )}
 
@@ -98,7 +98,6 @@ export default function DocumentsDetails({ document, onBack, docUrl }: Props) {
         {showRight && (
           <section className={`min-h-0 ${showLeft ? "lg:col-span-8" : "lg:col-span-12"}`}>
             <DocumentsPane
-              status={document.status}
               document={document}
               onClose={() => setShowRight(false)}
             />

@@ -1,225 +1,346 @@
-import React, { useMemo, useState } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+// components/Aichat.tsx
+import React, { useState } from "react";
+import { PaperclipIcon, ArrowUpIcon, ClockIcon, PencilIcon, X, Minimize2 } from "lucide-react";
 
-/** Row shape you can fetch from your API */
-export type TaskRow = {
-  id: string | number;
-  type:
-    | "HS Code Required"
-    | "Discrepancy"
-    | "Shipping Delayed"
-    | "Custom Delayed"
-    | "Missing Information"
-    | (string & {}); // allow unknown types too
-  sku: string;
-  dueDate: string; // e.g. "DD-MM-YYYY"
-  stackCount?: number; // the little +5, +6 badge
+type ChatFileMeta = {
+  id: string;
+  name: string;
+  mime: string;
+  size: number;
+  formKey: string; // key used in FormData and to match on the server
 };
 
-type TasksProps = {
-  title?: string;
-  rows?: TaskRow[];             // if omitted, component shows built-in mock rows
-  page?: number;                // controlled page (1-based). If omitted, component manages its own page
-  pageSize?: number;            // default
-  totalPages?: number;          // set when using server-side pagination
-  onPageChange?: (nextPage: number) => void;
-  onClose?: () => void;
-  onRowClick?: (row: TaskRow) => void;
+type ChatFile = ChatFileMeta & { file: File };
+
+declare module "./Aichat" {} // (no-op, keep TS happy if you split types)
+
+export type ChatItem = {
+  message: string;
+  time: string;
+  from: "user" | "ai";
+  isPlaceholder?: boolean;
+  files?: ChatFileMeta[];
+};
+
+type Props = {
   className?: string;
+  onCollapse?: () => void;
 };
 
-const mockRows: TaskRow[] = [
-  { id: 1,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-001", dueDate: "DD-MM-YYYY" },
-  { id: 2,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-002", dueDate: "DD-MM-YYYY" },
-  { id: 3,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-003", dueDate: "DD-MM-YYYY", stackCount: 5 },
-  { id: 4,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-004", dueDate: "DD-MM-YYYY", stackCount: 6 },
-  { id: 5,  type: "Missing Information", sku: "HP-851830-BLK-WRD-005", dueDate: "DD-MM-YYYY" },
-  { id: 6,  type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-006", dueDate: "DD-MM-YYYY", stackCount: 7 },
-  { id: 7,  type: "HS Code Required",  sku: "HP-851830-BLK-WRD-007", dueDate: "DD-MM-YYYY" },
-  { id: 8,  type: "Discrepancy",       sku: "HP-851830-BLK-WRD-008", dueDate: "DD-MM-YYYY" },
-  { id: 9,  type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-009", dueDate: "DD-MM-YYYY", stackCount: 8 },
-  { id: 10, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-010", dueDate: "DD-MM-YYYY", stackCount: 5 },
-  { id: 11, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-011", dueDate: "DD-MM-YYYY", stackCount: 4 },
-  { id: 12, type: "Discrepancy",       sku: "HP-851830-BLK-WRD-012", dueDate: "DD-MM-YYYY", stackCount: 7 },
-  { id: 13, type: "Shipping Delayed",  sku: "HP-851830-BLK-WRD-013", dueDate: "DD-MM-YYYY", stackCount: 5 },
-  { id: 14, type: "Custom Delayed",    sku: "HP-851830-BLK-WRD-014", dueDate: "DD-MM-YYYY", stackCount: 4 },
-  { id: 15, type: "HS Code Required",  sku: "HP-851830-BLK-WRD-015", dueDate: "DD-MM-YYYY", stackCount: 7 },
-];
+const formatTimestamp = (iso: string) =>
+  new Date(iso).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZoneName: "short",
+  });
 
-function typeClasses(type: TaskRow["type"]) {
-  // colors tuned to the screenshot feel
-  switch (type) {
-    case "Shipping Delayed":
-      return "bg-blue-50 text-blue-700 border border-blue-200";
-    case "Custom Delayed":
-      return "bg-orange-50 text-orange-700 border border-orange-200";
-    case "Discrepancy":
-      return "bg-white text-gray-700 border border-gray-300";
-    case "HS Code Required":
-      return "bg-white text-gray-700 border border-gray-300";
-    case "Missing Information":
-      return "bg-white text-gray-700 border border-gray-300";
-    default:
-      return "bg-white text-gray-700 border border-gray-300";
-  }
-}
+  export type AiChatHandle = {
+    /** Programmatically send a message through the same flow as pressing Send */
+    sendMessage: (text: string) => void;
+  };
 
-export default function Tasks({
-  title = "Tasks",
-  rows,
-  page,
-  pageSize = 9,
-  totalPages,
-  onPageChange,
-  onClose,
-  onRowClick,
-  className = "",
-}: TasksProps) {
-  const controlled = typeof page === "number" && typeof onPageChange === "function";
-  const [localPage, setLocalPage] = useState(1);
+export default function AiChatCard({ className, onCollapse }: Props) {
 
-  const currentPage = controlled ? (page as number) : localPage;
+  //current chat message in the text box
+  const [chatMessage, setChatMessage] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // If caller didn't give totalPages, we'll compute it from provided rows.
-  let allRows;
-    if (rows && rows.length > 0) {
-    allRows = rows;
-    } else {
-    allRows = mockRows;
-    }
-  const derivedTotalPages = Math.max(1, Math.ceil(allRows.length / pageSize));
-  const pages = totalPages ?? derivedTotalPages;
+  //current chat history
+  const [chatHistory, setChatHistory] = useState<ChatItem[]>([]);
 
-  const pageStart = (currentPage - 1) * pageSize;
-  const pageRows = useMemo(
-    () => (totalPages ? allRows : allRows.slice(pageStart, pageStart + pageSize)),
-    // when server-side paginating, assume caller already filtered rows for the current page
-    [allRows, pageStart, pageSize, totalPages]
-  );
+  //show all chat history page
+  const [showHistory, setShowHistory] = useState(false);
 
-  const go = (p: number) => {
-    const clamped = Math.min(Math.max(1, p), pages);
-    if (controlled) onPageChange!(clamped);
-    else setLocalPage(clamped);
+  // current chat files in the text box
+  const [chatFiles, setChatFiles] = React.useState<ChatFile[]>([]); // ✅
+
+  //show attach menu
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+
+  //file input ref
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const mockSessions = [
+    { id: 1, title: "Chat 1", description: "Description", dateLabel: "Mon" },
+    { id: 2, title: "Chat 2", description: "Description", dateLabel: "29/7" },
+    { id: 3, title: "Chat 3", description: "Description", dateLabel: "28/7" },
+  ];
+
+  const showQuick = chatHistory.length === 0;
+  
+  const handleSend = async () => {
+    const trimmed = chatMessage.trim();
+    if (!trimmed || isProcessing) return;
+
+    setChatMessage("");
+    setIsProcessing(true);
+
+    // 1) Show user bubble
+    const userMsg: ChatItem = { from: "user", message: trimmed, time: new Date().toISOString() };
+    setChatHistory(prev => [...prev, userMsg]);
+
+    // 2) Prepare payload without placeholder
+    const historyForServer = [...chatHistory, userMsg];
+
+    // 3) Request
+    const responsePromise = fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: historyForServer }),
+    }).then(r => r.json());
+
+    // 4) Add placeholder
+    let placeholderIdx = -1;
+    setChatHistory(prev => {
+      placeholderIdx = prev.length;
+      return [
+        ...prev,
+        { from: "ai", message: "Processing…", time: new Date().toISOString(), isPlaceholder: true },
+      ];
+    });
+
+    // 5) Swap placeholder with real reply
+    const data = await responsePromise;
+    setIsProcessing(false);
+
+    setChatHistory(prev =>
+      prev.map((m, i) =>
+        i === placeholderIdx
+          ? { ...m, message: data.reply ?? `⚠️  ${data.error ?? "Chat error"}`, isPlaceholder: false }
+          : m,
+      ),
+    );
   };
 
   return (
-    <section
-    className={`flex h-full min-h-0 flex-col rounded-2xl border bg-white shadow-sm shadow-gray-200 p-4 lg:p-5`}      aria-label={title}
+    <div
+      className={
+        className ??
+        "mx-auto w-full max-w-7xl h-full min-h-[28rem] rounded-2xl border-2 bg-white p-4 shadow-lg shadow-gray-300 flex flex-col"
+      }
     >
-      {/* Header */}
-      <div className="mb-4 flex items-start justify-between shrink-0">
-        <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-        <button
-          type="button"
-          onClick={onClose}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-100 text-gray-500"
-          aria-label="Close tasks"
-          title="Close"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
-
-      {/* Table */}
-      <div className="flex-1 overflow-hidden rounded-xl border border-gray-200 h-full min-h-0">
-        <div className="overflow-x-auto min-h-0 overflow-y-auto h-full">
-          <table className="min-w-full table-fixed">
-            <thead className="bg-gray-50 text-gray-600">
-              <tr className="text-left text-sm">
-                <th className="w-[220px] px-4 py-3 font-medium">Task Type</th>
-                <th className="px-4 py-3 font-medium">SKU</th>
-                <th className="w-[160px] px-4 py-3 font-medium">Due Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 ">
-                
-              {pageRows.map((row) => (
-                <tr
-                  key={row.id}
-                  onClick={() => onRowClick?.(row)}
-                  className="text-sm hover:bg-gray-50 cursor-pointer"
-                  role="button"
-                  tabIndex={0}
-                >
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${typeClasses(row.type)}`}>
-                      {row.type}
-                    </span>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <span className="block max-w-[260px] truncate text-gray-800">
-                        {row.sku}
-                      </span>
-                      {typeof row.stackCount === "number" && row.stackCount > 0 && (
-                        <span className="inline-flex h-6 items-center rounded-full bg-gray-100 px-2 text-xs font-semibold text-gray-700">
-                          +{row.stackCount}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-3 text-gray-700">{row.dueDate}</td>
-                </tr>
-              ))}
-              {pageRows.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="px-4 py-8 text-center text-sm text-gray-500">
-                    No tasks to display
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {/* Card header */}
+      <div className="flex items-center justify-between mb-4 shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600 text-white">
+            <span className="text-[11px] font-bold">AI</span>
+          </div>
+          <span className="text-sm font-semibold text-gray-700">AI Assistant</span>
         </div>
-      </div>
-
-      {/* Pagination */}
-      <div className="mt-4 flex items-center justify-center gap-2 text-sm shrink-0">
-        
-        <button
-          type="button"
-          onClick={() => go(currentPage - 1)}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          disabled={currentPage <= 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Previous
-        </button>
-
-        {/* Simple numeric strip like the screenshot: 1 2 … */}
-        <div className="mx-1 inline-flex items-center gap-1">
+        <div className="flex items-center gap-3 text-gray-500">
           <button
-            type="button"
-            onClick={() => go(1)}
-            className={`h-8 w-8 rounded-md ${currentPage === 1 ? "bg-gray-900 text-white" : "hover:bg-gray-100 text-gray-800"}`}
+            onClick={() => setShowHistory(v => !v)}
+            className={`rounded-lg p-2 ${showHistory ? "bg-gray-300" : "hover:bg-gray-300"}`}
+            title="Chat history"
           >
-            1
+            <ClockIcon className="h-4 w-4" />
           </button>
-          {pages >= 2 && (
-            <button
-              type="button"
-              onClick={() => go(2)}
-              className={`h-8 w-8 rounded-md ${currentPage === 2 ? "bg-gray-900 text-white" : "hover:bg-gray-100 text-gray-800"}`}
-            >
-              2
-            </button>
-          )}
-          {pages > 2 && <span className="px-1 text-gray-500">…</span>}
+          <button className="rounded-lg p-2 hover:bg-gray-100" title="Compose">
+            <PencilIcon className="h-4 w-4" />
+          </button>
+          {/* NEW: Collapse button to hide chat / show ActionRail */}
+          <button
+            onClick={onCollapse}
+            className="rounded-lg p-2 hover:bg-gray-100"
+            title="Collapse chat"
+            aria-label="Collapse chat"
+          >
+            <Minimize2 className="h-4 w-4" />
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={() => go(currentPage + 1)}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          disabled={currentPage >= pages}
-        >
-          Next
-          <ChevronRight className="h-4 w-4" />
-        </button>
       </div>
-    </section>
+
+      {/* History or Greeting or Chats */}
+      <div className="flex-1 min-h-0 overflow-y-auto pr-2">
+        {showHistory ? (
+          <div className="pb-4">
+            {/* History header row */}
+            <div className="mb-6 flex items-center justify-between ">
+              <h2 className="text-xl font-semibold">Chat History</h2>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowHistory(false)}
+                  className="rounded-lg p-2 hover:bg-gray-300 bg-gray-100"
+                  title="Close"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* History list */}
+            <ul className="divide-y divide-gray-100">
+              {mockSessions.map(s => (
+                <li key={s.id} className="flex items-start justify-between py-5">
+                  <div>
+                    <div className="text-base font-medium text-gray-900">{s.title}</div>
+                    <div className="text-sm text-gray-500">{s.description}</div>
+                  </div>
+                  <div className="pt-1 text-sm text-gray-400">{s.dateLabel}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <>
+            {/* Greeting (hide once there is any chat) */}
+            {chatHistory.length === 0 && (
+              <div className="mb-8 mt-32 text-center bg-white">
+                <h2 className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-xl font-bold leading-7 text-transparent">
+                  Hi Jimmy!
+                </h2>
+                <p className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-lg font-semibold text-transparent">
+                  How may I assist you today?
+                </p>
+                <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
+                  You can ask me anything — whether it&apos;s about a specific product,
+                  document, shipment, or a general question.
+                </p>
+              </div>
+            )}
+
+            {/* Chat transcript */}
+            <div className="pr-2">
+              {chatHistory.length > 0 && (
+                <div className="mb-6 space-y-4">
+                  {chatHistory.map((item, idx) =>
+                    item.from === "ai" ? (
+                      <div key={idx} className="flex items-start space-x-3">
+                        <div className="max-w-md rounded-lg bg-slate-50 p-4">
+                          <p className="text-sm text-gray-700">{item.message}</p>
+                          <p className="text-xs text-gray-500">{formatTimestamp(item.time)}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div key={idx} className="flex items-start justify-end space-x-3">
+                        <div className="max-w-md rounded-lg bg-blue-600 p-4 text-white">
+                          <p className="text-sm">{item.message}</p>
+                          <p className="text-right text-xs opacity-80">{formatTimestamp(item.time)}</p>
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Chat box */}
+      <div className="rounded-xl p-2 mt-4 shrink-0">
+        {/* Quick suggestions (hide after first message) */}
+        {showQuick && (
+          <>
+            <div className="flex items-center gap-2 px-2 pb-2 text-black text-2xl">
+              <span className="text-xs">Quick suggestions:</span>
+            </div>
+
+            <div className="mb-2 flex flex-wrap items-center gap-3">
+              {[
+                "Show me products in transition",
+                "What are the tasks I need to complete today",
+                "What are the HS Code",
+              ].map((s, i) => (
+                <button
+                  key={i}
+                  className="rounded-full border px-3 py-1.5 text-sm text-gray-700 shadow-sm hover:bg-gray-50 bg-white border-gray-300"
+                  onClick={() => setChatMessage(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Text box + actions */}
+        <div className="rounded-xl border p-1.5 shadow-md bg-red-500">
+          <h1>Hello</h1>
+          <div className="bg-white rounded-md px-1.5 pt-1.5 pb-0 h-full ">
+            <textarea
+              className="h-16 w-full resize-none overflow-y-auto rounded-t-md rounded-b-none p-3 text-md outline-none placeholder-gray-400 leading-relaxed"
+              placeholder="Type your message here..."
+              wrap="soft"
+              spellCheck={false}
+              value={chatMessage}
+              onChange={e => setChatMessage(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+            />
+            <div className="bg-white rounded-lg rounded-t-none -mt-px flex items-center justify-between px-2 py-1.5">
+              {/* LEFT: Attach */}
+              <div className="relative">
+                <button
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
+                  title="Attach file"
+                  onClick={() => setShowAttachMenu(v => !v)}
+                >
+                  <PaperclipIcon className="h-5 w-5" />
+                </button>
+
+                {/* small dropdown — NEW */}
+                {showAttachMenu && (
+                  <div className="absolute bottom-12 left-0 z-50 w-40 rounded-lg border bg-white p-1 shadow-lg">
+                    <button
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-gray-50"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Upload PDF
+                    </button>
+                  </div>
+                )}
+
+                {/* hidden input — NEW */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="application/pdf"
+                  multiple
+                  className="hidden"
+                  onChange={e => {
+                    const files = Array.from(e.target.files ?? []).filter(
+                      f => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"),
+                    );
+                    if (!files.length) return;
+                    const now = Date.now();
+                    setChatFiles(prev => [
+                      ...prev,
+                      ...files.map((f, i) => ({
+                        id: crypto.randomUUID(),
+                        name: f.name,
+                        mime: f.type || "application/pdf",
+                        size: f.size,
+                        formKey: `file_${now}_${i}`,
+                        file: f,
+                      })),
+                    ]);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                    setShowAttachMenu(false);
+                  }}
+                />
+              </div>
+
+
+              <button
+                onClick={handleSend}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                title="Send"
+                disabled={isProcessing}
+              >
+                <ArrowUpIcon className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -97,3 +97,13 @@ model actions {
 
 
 }
+model Task {
+  id         Int         @id @default(autoincrement())
+  type       String?
+  poNumber   String?
+  status     String?
+  dueDate    String?
+  stackCount Int?
+
+  createdAt  DateTime    @default(now())
+}

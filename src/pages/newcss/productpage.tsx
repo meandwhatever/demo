@@ -1,10 +1,10 @@
 // Product landing page mirroring your taskpage layout.
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Sidebar from "./components/sidebar";
 import TopNav from "./components/nav";
 import Products, { ProductRow } from "./components/products";
 import ProductDetails from "./components/productdetails";
-import ActionRailSwitch, { RightView } from "./components/actionrailswitch";
+import ActionRailSwitch, { RightView, ActionRailSwitchHandle } from "./components/actionrailswitch";
 
 export default function ProductPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -13,6 +13,8 @@ export default function ProductPage() {
   // Keep same right-rail <-> chat switch behavior as taskpage
   const [rightView, setRightView] = useState<RightView>("rail");
   const leftSpan = rightView === "chat" ? "lg:col-span-7" : "lg:col-span-11";
+
+  const railRef = useRef<ActionRailSwitchHandle>(null);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -36,12 +38,13 @@ export default function ProductPage() {
                     onBack={() => setSelectedProduct(null)}
                   />
                 ) : (
-                  <Products onRowClick={(p: ProductRow) => setSelectedProduct(p)} />
+                  <Products onRowClick={(p: ProductRow) => setSelectedProduct(p)}
+                  onSearchSubmit={(q) => railRef.current?.openChatAndSend(q)} />
                 )}
               </section>
 
               {/* Right: ActionRail <-> AI Chat switch */}
-              <ActionRailSwitch onViewChange={setRightView} />
+              <ActionRailSwitch ref={railRef} onViewChange={setRightView} />
             </div>
           </div>
         </main>

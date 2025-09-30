@@ -1,14 +1,14 @@
 // taskpage.tsx  (aka Landing)
 import React, { useState, useRef } from "react";
-import Sidebar from "./components/sidebar";
-import TopNav from "./components/nav";
-import Tasks, { TaskRow } from "./components/task";
-import TaskDetails from "./components/taskdetails";
-import ActionRailSwitch, { RightView, ActionRailSwitchHandle } from "./components/actionrailswitch";
+import Sidebar from "../sidebar";
+import TopNav from "../nav";
+import Tasks, { TaskRow } from "../task";
+import TaskDetails from "../taskdetails";
+import ActionRailSwitch, { RightView, ActionRailSwitchHandle } from "../actionrailswitch";
+import SKUPage from "./skupage";
 
-export default function Landing() {
+export default function SKU() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedTask, setSelectedTask] = useState<TaskRow | null>(null);
 
   // mirror the switch's current view so we can size the left column
   const [rightView, setRightView] = useState<RightView>("rail");
@@ -34,15 +34,9 @@ export default function Landing() {
             <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-12">
               {/* Left: Task list or Task details */}
               <section className={`min-h-0 overflow-y-auto ${leftSpan}`}>
-                {selectedTask ? (
-                  <TaskDetails
-                    task={selectedTask}
-                    onBack={() => setSelectedTask(null)}
-                  />
-                ) : (
-                  <Tasks onRowClick={(t: TaskRow) => setSelectedTask(t)} 
-                  onSearchSubmit={(q) => railRef.current?.openChatAndSend(q)}/>
-                )}
+             
+                  <SKUPage />
+
               </section>
 
               {/* Right: ActionRail <-> AI Chat switch */}
